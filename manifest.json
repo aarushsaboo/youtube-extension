@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Serenity for YouTube",
+  "version": "1.0",
+  "description": "A Google extension for making YouTube a more peaceful and productive experience.",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["https://www.youtube.com/*"],
+  "action": {
+    "default_popup": "dist/popup.html",
+    "default_icon":{
+      "16": "dist/icons/icon1.png",
+      "32": "dist/icons/icon2.png",
+      "48": "dist/icons/icon3.png",
+      "128": "dist/icons/icon4.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/feed/trending?bp=6gQJRkVleHBsb3Jl",
+        "https://www.youtube.com/feed/storefront?bp=ogUCKAU%3D",
+        "https://www.youtube.com/channel/UC4R8DWoMoI7CAwX8_LjQHig",
+        "https://www.youtube.com/gaming",
+        "https://www.youtube.com/channel/UCYfdidRxbB8Qhf0Nx7ioOYw",
+        "https://www.youtube.com/channel/UCEgdi0XIXXZ-qJOFPf4JSKw",
+        "https://www.youtube.com/"
+      ],
+      "js": ["dist/content.js"]
+    }
+  ]
+}

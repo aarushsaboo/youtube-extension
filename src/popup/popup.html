@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Content Filter</title>
+    <style>
+        body {
+            width: 300px;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+        .filter-section {
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>YouTube Content Filter</h2>
+    
+    <div class="filter-section">
+        <h3>Keyword Filters</h3>
+        <input type="text" id="keywordInput" placeholder="Enter keywords to block">
+        <button id="addKeyword">Add Keyword</button>
+        <div id="keywordList"></div>
+    </div>
+
+    <div class="filter-section">
+        <h3>Category Filters</h3>
+        <select id="categoryFilter">
+            <option value="">Select Category to Block</option>
+            <option value="gaming">Gaming</option>
+            <option value="news">News</option>
+            <option value="music">Music</option>
+            <option value="comedy">Comedy</option>
+        </select>
+    </div>
+
+    <div class="filter-section">
+        <h3>Content Restrictions</h3>
+        <label>
+            <input type="checkbox" id="restrictAdult"> Block Adult Content
+        </label>
+    </div>
+
+    <button id="saveFilters">Save Filters</button>
+
+    <script src="popup.js"></script>
+</body>
+</html>
