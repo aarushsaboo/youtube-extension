@@ -1,14 +1,10 @@
 // Utility functions
 export function debounce(func, delay) {
   let timeoutId
-  return function (...args) {
+  return function () {
+    const context = this
+    const args = arguments
     clearTimeout(timeoutId)
-    timeoutId = setTimeout(() => func.apply(this, args), delay)
+    timeoutId = setTimeout(() => func.apply(context, args), delay)
   }
-}
-
-export function injectStyles(css) {
-  const style = document.createElement("style")
-  style.textContent = css
-  document.head.appendChild(style)
 }

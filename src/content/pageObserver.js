@@ -4,9 +4,13 @@ import { getFromStorage } from "./storage.js"
 
 export function observePageChanges() {
   const observer = new MutationObserver(
-    debounce(async () => {
-      const { blockedKeywords = [] } = await getFromStorage(["blockedKeywords"])
-      filterContent(blockedKeywords)
+    debounce(function () {
+      chrome.storage.sync.get(["blockedKeywords"], function (filters) {
+        if (!filters.blockedKeywords || filters.blockedKeywords.length === 0)
+          return
+
+        filterContent(filters.blockedKeywords)
+      })
     }, 300)
   )
 

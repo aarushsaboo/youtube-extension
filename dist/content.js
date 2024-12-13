@@ -13,24 +13,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   CONFIG: () => (/* binding */ CONFIG)
 /* harmony export */ });
 const CONFIG = {
-  ALLOWED_PAGES: ["/", "/feed/subscriptions", "/feed/trending"],
+  ALLOWED_PAGES: [
+    "/",
+    "/channel/UCEgdi0XIXXZ-qJOFPf4JSKw",
+    "/channel/UCYfdidRxbB8Qhf0Nx7ioOYw",
+    "/gaming",
+    "/channel/UC4R8DWoMoI7CAwX8_LjQHig",
+    "/feed/storefront?bp=ogUCKAU%3D",
+    "/feed/trending?bp=6gQJRkVleHBsb3Jl",
+  ],
   SELECTORS: {
-<<<<<<< HEAD
     videosAndShorts: [
       "ytd-rich-item-renderer h3",
       "ytd-grid-video-renderer h3 a",
       "ytm-shorts-lockup-view-model-v2 h3 a",
       "ytd-grid-movie-renderer h3 span",
     ],
-=======
-    videosAndShorts: "ytd-rich-item-renderer h3",
->>>>>>> parent of 025f8d9 (allowed pages fixed)
   },
 }
 
-
 // Structure for shorts
 // ytd-rich-item-renderer (#content or .ytd-rich-item-renderer) (ytm-shorts-lockup-view-model-v2) (ytm-shorts-lockup-view-model) (.shortsLockupViewModelHostOutsideMetadata shortsLockupViewModelHostMetadataRounded image-overlay-text) (h3 with an aria-label)
+
 
 /***/ }),
 
@@ -54,20 +58,6 @@ function shouldApplyFiltering(path) {
   )
 }
 
-function filterContent(blockedKeywords) {
-  const contentElements = document.querySelectorAll(
-    _config_js__WEBPACK_IMPORTED_MODULE_0__.CONFIG.SELECTORS.videosAndShorts
-  )
-
-  contentElements.forEach((element) => {
-    const title = element.textContent.trim().toLowerCase()
-
-    if (isBlocked(title, blockedKeywords)) {
-      hideAndRemoveElement(element)
-    }
-  })
-}
-
 function isBlocked(title, blockedKeywords) {
   return blockedKeywords.some((keyword) =>
     title.includes(keyword.toLowerCase())
@@ -75,8 +65,12 @@ function isBlocked(title, blockedKeywords) {
 }
 
 function hideAndRemoveElement(element) {
-  const renderer = element.closest("ytd-rich-item-renderer")
+  const renderer = element.closest(
+    "ytd-rich-item-renderer, ytd-video-renderer, ytd-reel-item-renderer"
+  )
+
   if (renderer) {
+    // More robust blocking
     renderer.setAttribute("data-yt-filter-blocked", "true")
     renderer.style.transition = "all 0.5s ease"
     renderer.style.opacity = "0"
@@ -85,10 +79,53 @@ function hideAndRemoveElement(element) {
     setTimeout(() => {
       if (renderer.parentNode) {
         renderer.remove()
+
+        // Add permanent style to prevent re-adding
+        const style = document.createElement("style")
+        style.textContent = `
+          ytd-rich-item-renderer[data-yt-filter-blocked="true"], 
+          ytd-video-renderer[data-yt-filter-blocked="true"],
+          ytd-reel-item-renderer[data-yt-filter-blocked="true"] {
+            display: none !important;
+            height: 0 !important;
+            overflow: hidden !important;
+          }
+        `
+        document.head.appendChild(style)
       }
     }, 500)
   }
 }
+
+function filterContent(blockedKeywords) {
+  if (!blockedKeywords || blockedKeywords.length === 0) return
+
+  _config_js__WEBPACK_IMPORTED_MODULE_0__.CONFIG.SELECTORS.videosAndShorts.forEach((selector) => {
+    const contentElements = document.querySelectorAll(selector)
+
+    contentElements.forEach((element) => {
+      const titleElement = element.querySelector(
+        "#video-title, #video-title-link, .ShortsLockupViewModelHostMetadataTitle a"
+      )
+
+      let title = ""
+
+      // Check textContent or aria-label for title
+      if (titleElement) {
+        title = titleElement.textContent.trim()
+      } else if (element.hasAttribute("aria-label")) {
+        title = element.getAttribute("aria-label").trim()
+      }
+
+      if (!title) return // Skip if no title is found
+
+      if (isBlocked(title, blockedKeywords)) {
+        hideAndRemoveElement(element)
+      }
+    })
+  })
+}
+
 
 
 
@@ -113,9 +150,13 @@ __webpack_require__.r(__webpack_exports__);
 
 function observePageChanges() {
   const observer = new MutationObserver(
-    (0,_utils_js__WEBPACK_IMPORTED_MODULE_0__.debounce)(async () => {
-      const { blockedKeywords = [] } = await (0,_storage_js__WEBPACK_IMPORTED_MODULE_2__.getFromStorage)(["blockedKeywords"])
-      ;(0,_filters_js__WEBPACK_IMPORTED_MODULE_1__.filterContent)(blockedKeywords)
+    (0,_utils_js__WEBPACK_IMPORTED_MODULE_0__.debounce)(function () {
+      chrome.storage.sync.get(["blockedKeywords"], function (filters) {
+        if (!filters.blockedKeywords || filters.blockedKeywords.length === 0)
+          return
+
+        ;(0,_filters_js__WEBPACK_IMPORTED_MODULE_1__.filterContent)(filters.blockedKeywords)
+      })
     }, 300)
   )
 
@@ -162,24 +203,18 @@ function saveToStorage(data) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   debounce: () => (/* binding */ debounce),
-/* harmony export */   injectStyles: () => (/* binding */ injectStyles)
+/* harmony export */   debounce: () => (/* binding */ debounce)
 /* harmony export */ });
 // Utility functions
 function debounce(func, delay) {
   let timeoutId
-  return function (...args) {
+  return function () {
+    const context = this
+    const args = arguments
     clearTimeout(timeoutId)
-    timeoutId = setTimeout(() => func.apply(this, args), delay)
+    timeoutId = setTimeout(() => func.apply(context, args), delay)
   }
 }
-
-function injectStyles(css) {
-  const style = document.createElement("style")
-  style.textContent = css
-  document.head.appendChild(style)
-}
-
 
 /***/ })
 
@@ -246,53 +281,40 @@ var __webpack_exports__ = {};
   !*** ./src/content/main.js ***!
   \*****************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.js */ "./src/content/utils.js");
-/* harmony import */ var _config_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./config.js */ "./src/content/config.js");
-/* harmony import */ var _storage_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./storage.js */ "./src/content/storage.js");
-/* harmony import */ var _pageObserver_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./pageObserver.js */ "./src/content/pageObserver.js");
-/* harmony import */ var _filters_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./filters.js */ "./src/content/filters.js");
+/* harmony import */ var _config_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config.js */ "./src/content/config.js");
+/* harmony import */ var _storage_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./storage.js */ "./src/content/storage.js");
+/* harmony import */ var _pageObserver_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./pageObserver.js */ "./src/content/pageObserver.js");
+/* harmony import */ var _filters_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./filters.js */ "./src/content/filters.js");
 
 
 
 
 
-
-
-function disableHoverPlay() {
-  (0,_utils_js__WEBPACK_IMPORTED_MODULE_0__.injectStyles)(`
-    ytd-rich-item-renderer:hover video, 
-    ytd-reel-item-renderer:hover video {
-      pointer-events: none !important;
-    }
-  `)
-}
 
 async function init() {
   // Check if filtering should occur
-  if (!(0,_filters_js__WEBPACK_IMPORTED_MODULE_4__.shouldApplyFiltering)(window.location.pathname)) return
-
-  // Apply hover play fix
-  disableHoverPlay()
+  if (!(0,_filters_js__WEBPACK_IMPORTED_MODULE_3__.shouldApplyFiltering)(window.location.pathname)) return
 
   // Initial content filtering
   let blockedKeywords = []
   if (typeof chrome !== "undefined" && chrome.storage) {
     try {
-      const storageData = await (0,_storage_js__WEBPACK_IMPORTED_MODULE_2__.getFromStorage)(["blockedKeywords"])
+      const storageData = await (0,_storage_js__WEBPACK_IMPORTED_MODULE_1__.getFromStorage)(["blockedKeywords"])
       blockedKeywords = storageData.blockedKeywords || []
     } catch (err) {
       console.error("Chrome not defined at this point", err)
     }
   }
-  (0,_filters_js__WEBPACK_IMPORTED_MODULE_4__.filterContent)(blockedKeywords)
+  (0,_filters_js__WEBPACK_IMPORTED_MODULE_3__.filterContent)(blockedKeywords)
 
   // Start observing page changes
-  ;(0,_pageObserver_js__WEBPACK_IMPORTED_MODULE_3__.observePageChanges)()
+  ;(0,_pageObserver_js__WEBPACK_IMPORTED_MODULE_2__.observePageChanges)()
 }
 
 // Initialize on page load
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init)
+    console.log("This is filtering YOUTHOOB... ALERTTTTTT!")
 } else {
   init()
 }
