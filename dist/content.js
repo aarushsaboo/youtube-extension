@@ -25,8 +25,9 @@ const CONFIG = {
   SELECTORS: {
     videosAndShorts: [
       "ytd-rich-item-renderer h3",
-      "ytd-grid-video-renderer h3",
-      "ytm-shorts-lockup-view-model-v2 h3",
+      "ytd-grid-video-renderer h3 a",
+      "ytm-shorts-lockup-view-model-v2 h3 a",
+      "ytd-grid-movie-renderer h3 span",
     ],
   },
 }
@@ -79,16 +80,19 @@ function isBlocked(title, blockedKeywords) {
 }
 
 function hideAndRemoveElement(element) {
-  element
-    .closest("ytd-rich-item-renderer")
-    .setAttribute("data-yt-filter-blocked", "true")
-  element.closest("ytd-rich-item-renderer").style.transition = "all 0.5s ease"
-  element.closest("ytd-rich-item-renderer").style.opacity = "0"
-  element.closest("ytd-rich-item-renderer").style.transform = "scale(0.8)"
+  const renderer = element.closest("ytd-rich-item-renderer")
+  if (renderer) {
+    renderer.setAttribute("data-yt-filter-blocked", "true")
+    renderer.style.transition = "all 0.5s ease"
+    renderer.style.opacity = "0"
+    renderer.style.transform = "scale(0.8)"
 
-  setTimeout(() => {
-    element.closest("ytd-rich-item-renderer").remove()
-  }, 500)
+    setTimeout(() => {
+      if (renderer.parentNode) {
+        renderer.remove()
+      }
+    }, 500)
+  }
 }
 
 
@@ -276,8 +280,16 @@ async function init() {
   disableHoverPlay()
 
   // Initial content filtering
-  const { blockedKeywords = [] } = await (0,_storage_js__WEBPACK_IMPORTED_MODULE_2__.getFromStorage)(["blockedKeywords"])
-  ;(0,_filters_js__WEBPACK_IMPORTED_MODULE_4__.filterContent)(blockedKeywords)
+  let blockedKeywords = []
+  if (typeof chrome !== "undefined" && chrome.storage) {
+    try {
+      const storageData = await (0,_storage_js__WEBPACK_IMPORTED_MODULE_2__.getFromStorage)(["blockedKeywords"])
+      blockedKeywords = storageData.blockedKeywords || []
+    } catch (err) {
+      console.error("Chrome not defined at this point", err)
+    }
+  }
+  (0,_filters_js__WEBPACK_IMPORTED_MODULE_4__.filterContent)(blockedKeywords)
 
   // Start observing page changes
   ;(0,_pageObserver_js__WEBPACK_IMPORTED_MODULE_3__.observePageChanges)()

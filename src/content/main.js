@@ -22,7 +22,15 @@ async function init() {
   disableHoverPlay()
 
   // Initial content filtering
-  const { blockedKeywords = [] } = await getFromStorage(["blockedKeywords"])
+  let blockedKeywords = []
+  if (typeof chrome !== "undefined" && chrome.storage) {
+    try {
+      const storageData = await getFromStorage(["blockedKeywords"])
+      blockedKeywords = storageData.blockedKeywords || []
+    } catch (err) {
+      console.error("Chrome not defined at this point", err)
+    }
+  }
   filterContent(blockedKeywords)
 
   // Start observing page changes

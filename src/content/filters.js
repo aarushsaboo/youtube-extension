@@ -28,16 +28,19 @@ function isBlocked(title, blockedKeywords) {
 }
 
 function hideAndRemoveElement(element) {
-  element
-    .closest("ytd-rich-item-renderer")
-    .setAttribute("data-yt-filter-blocked", "true")
-  element.closest("ytd-rich-item-renderer").style.transition = "all 0.5s ease"
-  element.closest("ytd-rich-item-renderer").style.opacity = "0"
-  element.closest("ytd-rich-item-renderer").style.transform = "scale(0.8)"
+  const renderer = element.closest("ytd-rich-item-renderer")
+  if (renderer) {
+    renderer.setAttribute("data-yt-filter-blocked", "true")
+    renderer.style.transition = "all 0.5s ease"
+    renderer.style.opacity = "0"
+    renderer.style.transform = "scale(0.8)"
 
-  setTimeout(() => {
-    element.closest("ytd-rich-item-renderer").remove()
-  }, 500)
+    setTimeout(() => {
+      if (renderer.parentNode) {
+        renderer.remove()
+      }
+    }, 500)
+  }
 }
 
 export { shouldApplyFiltering, filterContent };
