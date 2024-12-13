@@ -40,7 +40,6 @@ async function init() {
 // Initialize on page load
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init)
-  console.log('This is filtering YOUTHOOB... ALERTTTTTT!')
 } else {
   init()
 }
