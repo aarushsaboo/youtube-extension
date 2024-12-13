@@ -7,18 +7,19 @@ function shouldApplyFiltering(path) {
 }
 
 function filterContent(blockedKeywords) {
-  const contentElements = document.querySelectorAll(
-    CONFIG.SELECTORS.videosAndShorts
-  )
+  CONFIG.SELECTORS.videosAndShorts.forEach((selector) => {
+    const contentElements = document.querySelectorAll(selector)
 
-  contentElements.forEach((element) => {
-    const title = element.textContent.trim().toLowerCase()
+    contentElements.forEach((element) => {
+      const title = element.textContent.trim().toLowerCase()
 
-    if (isBlocked(title, blockedKeywords)) {
-      hideAndRemoveElement(element)
-    }
+      if (isBlocked(title, blockedKeywords)) {
+        hideAndRemoveElement(element)
+      }
+    })
   })
 }
+
 
 function isBlocked(title, blockedKeywords) {
   return blockedKeywords.some((keyword) =>

@@ -13,9 +13,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   CONFIG: () => (/* binding */ CONFIG)
 /* harmony export */ });
 const CONFIG = {
-  ALLOWED_PAGES: ["/", "/feed/subscriptions", "/feed/trending"],
+  ALLOWED_PAGES: [
+    "/",
+    "/channel/UCEgdi0XIXXZ-qJOFPf4JSKw",
+    "/channel/UCYfdidRxbB8Qhf0Nx7ioOYw",
+    "/gaming",
+    "/channel/UC4R8DWoMoI7CAwX8_LjQHig",
+    "/feed/storefront?bp=ogUCKAU%3D",
+    "/feed/trending?bp=6gQJRkVleHBsb3Jl",
+  ],
   SELECTORS: {
-    videosAndShorts: "ytd-rich-item-renderer h3",
+    videosAndShorts: [
+      "ytd-rich-item-renderer h3",
+      "ytd-grid-video-renderer h3",
+      "ytm-shorts-lockup-view-model-v2 h3",
+    ],
   },
 }
 
@@ -46,18 +58,19 @@ function shouldApplyFiltering(path) {
 }
 
 function filterContent(blockedKeywords) {
-  const contentElements = document.querySelectorAll(
-    _config_js__WEBPACK_IMPORTED_MODULE_0__.CONFIG.SELECTORS.videosAndShorts
-  )
+  _config_js__WEBPACK_IMPORTED_MODULE_0__.CONFIG.SELECTORS.videosAndShorts.forEach((selector) => {
+    const contentElements = document.querySelectorAll(selector)
 
-  contentElements.forEach((element) => {
-    const title = element.textContent.trim().toLowerCase()
+    contentElements.forEach((element) => {
+      const title = element.textContent.trim().toLowerCase()
 
-    if (isBlocked(title, blockedKeywords)) {
-      hideAndRemoveElement(element)
-    }
+      if (isBlocked(title, blockedKeywords)) {
+        hideAndRemoveElement(element)
+      }
+    })
   })
 }
+
 
 function isBlocked(title, blockedKeywords) {
   return blockedKeywords.some((keyword) =>
@@ -273,6 +286,7 @@ async function init() {
 // Initialize on page load
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init)
+  console.log('This is filtering YOUTHOOB... ALERTTTTTT!')
 } else {
   init()
 }
