@@ -5,11 +5,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const categoryFilter = document.getElementById("categoryFilter")
   const restrictAdultCheckbox = document.getElementById("restrictAdult")
   const saveFiltersBtn = document.getElementById("saveFilters")
+  //new
+  const animationStyles = document.getElementsByName("filterAnimationStyle")
 
   // Load existing filters
   chrome.storage.sync.get(
-    ["blockedKeywords", "blockedCategory", "restrictAdult"],
+    ["blockedKeywords", "blockedCategory", "restrictAdult", "animationStyle"],
     function (data) {
+      console.log("Loaded data from storage:", data) // <--- ADD THIS LINE
       // Populate existing filters
       if (data.blockedKeywords) {
         data.blockedKeywords.forEach((keyword) => {
@@ -23,6 +26,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (data.restrictAdult) {
         restrictAdultCheckbox.checked = data.restrictAdult
+      }
+
+      //new
+      if (data.animationStyle) {
+        const selectedRadio = document.getElementById(data.animationStyle)
+        if (selectedRadio) {
+          selectedRadio.checked = true
+          console.log("Selected animation style:", data.animationStyle)
+        }
       }
     }
   )
@@ -57,12 +69,18 @@ document.addEventListener("DOMContentLoaded", function () {
       el.textContent.replace("X", "").trim()
     )
 
+    const selectedAnimationStyle = Array.from(animationStyles).find(
+      (radio) => radio.checked
+    ).id
+    console.log("Saving animation style:", selectedAnimationStyle)
+
     // Save filters to storage
     chrome.storage.sync.set(
       {
         blockedKeywords: keywords,
         blockedCategory: categoryFilter.value,
         restrictAdult: restrictAdultCheckbox.checked,
+        animationStyle: selectedAnimationStyle
       },
       function () {
         saveFiltersBtn.textContent = "Saved!"
