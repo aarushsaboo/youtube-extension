@@ -17,7 +17,7 @@ function hideAndRemoveElement(element) {
     )
 
     if (!renderer) {
-      console.warn("No renderer found for the element:", element)
+      console.log("No renderer found for the element:", element)
       return
     }
 
@@ -31,7 +31,7 @@ function hideAndRemoveElement(element) {
         break
 
       default:
-        console.warn("Unknown animation style:", animationStyle)
+        console.log("Unknown animation style:", animationStyle)
         break
     }
   })

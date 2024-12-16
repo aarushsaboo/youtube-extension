@@ -2,20 +2,24 @@ import { getFromStorage } from "../components/storage/getFromStorage.js"
 import { observePageChanges } from "./observePageChanges.js"
 import { filterContent } from "../components/filtering/filterContent.js"
 import { shouldApplyFiltering } from "../components/filtering/shouldApplyFiltering.js"
+import { applyColorChanger } from "../colorTheme/colorChanger/colorChanger.js"
 
 async function init() {
   if (!shouldApplyFiltering(window.location.pathname)) return
 
   let blockedKeywords = []
+  let colorScheme = "light"
   if (typeof chrome !== "undefined" && chrome.storage) {
     try {
-      const storageData = await getFromStorage(["blockedKeywords"])
+      const storageData = await getFromStorage(["blockedKeywords", "colorScheme"])
       blockedKeywords = storageData.blockedKeywords || []
+      colorScheme = storageData.colorScheme || "light"
     } catch (err) {
       console.error("Chrome not defined at this point", err)
     }
   }
   filterContent(blockedKeywords)
+  applyColorChanger(colorScheme)
 
   observePageChanges()
 }

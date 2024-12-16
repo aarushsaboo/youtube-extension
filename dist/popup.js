@@ -9,12 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const categoryFilter = document.getElementById("categoryFilter")
   const restrictAdultCheckbox = document.getElementById("restrictAdult")
   const saveFiltersBtn = document.getElementById("saveFilters")
-  //new
   const animationStyles = document.getElementsByName("filterAnimationStyle")
 
   // Load existing filters
   chrome.storage.sync.get(
-    ["blockedKeywords", "blockedCategory", "restrictAdult", "animationStyle"],
+    ["blockedKeywords", "blockedCategory", "restrictAdult", "animationStyle", "colorScheme"],
     function (data) {
       console.log("Loaded data from storage:", data) // <--- ADD THIS LINE
       // Populate existing filters
@@ -32,7 +31,6 @@ document.addEventListener("DOMContentLoaded", function () {
         restrictAdultCheckbox.checked = data.restrictAdult
       }
 
-      //new
       if (data.animationStyle) {
         const selectedRadio = document.getElementById(data.animationStyle)
         if (selectedRadio) {
@@ -40,6 +38,13 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log("Selected animation style:", data.animationStyle)
         }
       }
+
+      //new
+      if (data.colorScheme) {
+        const colorSchemeDropdown = document.getElementById("colorSchemeSelect")
+        colorSchemeDropdown.value = data.colorScheme
+      }
+
     }
   )
 
@@ -78,13 +83,17 @@ document.addEventListener("DOMContentLoaded", function () {
     ).id
     console.log("Saving animation style:", selectedAnimationStyle)
 
+    const selectedColorScheme = document.getElementById("colorSchemeSelect").value
+
+
     // Save filters to storage
     chrome.storage.sync.set(
       {
         blockedKeywords: keywords,
         blockedCategory: categoryFilter.value,
         restrictAdult: restrictAdultCheckbox.checked,
-        animationStyle: selectedAnimationStyle
+        animationStyle: selectedAnimationStyle,
+        colorScheme: selectedColorScheme,
       },
       function () {
         saveFiltersBtn.textContent = "Saved!"
