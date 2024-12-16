@@ -1,6 +1,5 @@
-import { debounce } from "./utils.js"
-import { filterContent } from "./filters.js"
-import { getFromStorage } from "./storage.js"
+import { debounce } from "../components/utils/debounce.js"
+import { filterContent } from "../components/filtering/filterContent.js"
 
 export function observePageChanges() {
   const observer = new MutationObserver(

@@ -2,6 +2,175 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/components/filtering/filterContent.js":
+/*!***************************************************!*\
+  !*** ./src/components/filtering/filterContent.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   filterContent: () => (/* binding */ filterContent)
+/* harmony export */ });
+/* harmony import */ var _removing_hideAndRemoveElement__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../removing/hideAndRemoveElement */ "./src/components/removing/hideAndRemoveElement.js");
+/* harmony import */ var _content_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../content/config */ "./src/content/config.js");
+
+
+
+
+function isBlocked(title, blockedKeywords) {
+  return blockedKeywords.some((keyword) =>
+    title.includes(keyword.toLowerCase())
+  )
+}
+
+function filterContent(blockedKeywords) {
+  if (!blockedKeywords || blockedKeywords.length === 0) return
+
+  _content_config__WEBPACK_IMPORTED_MODULE_1__.CONFIG.SELECTORS.videosAndShorts.forEach((selector) => {
+    const contentElements = document.querySelectorAll(selector)
+
+    contentElements.forEach((element) => {
+      const titleElement = element.querySelector(
+        "#video-title, #video-title-link, .ShortsLockupViewModelHostMetadataTitle a"
+      )
+
+      let title = ""
+
+      // Check textContent or aria-label for title
+      if (titleElement) {
+        title = titleElement.textContent.trim()
+      } else if (element.hasAttribute("aria-label")) {
+        title = element.getAttribute("aria-label").trim()
+      }
+
+      if (!title) return // Skip if no title is found
+
+      if (isBlocked(title, blockedKeywords)) {
+        (0,_removing_hideAndRemoveElement__WEBPACK_IMPORTED_MODULE_0__.hideAndRemoveElement)(element)
+      }
+    })
+  })
+}
+
+
+
+
+/***/ }),
+
+/***/ "./src/components/filtering/shouldApplyFiltering.js":
+/*!**********************************************************!*\
+  !*** ./src/components/filtering/shouldApplyFiltering.js ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   shouldApplyFiltering: () => (/* binding */ shouldApplyFiltering)
+/* harmony export */ });
+/* harmony import */ var _content_config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../content/config */ "./src/content/config.js");
+
+
+function shouldApplyFiltering(path) {
+  return _content_config__WEBPACK_IMPORTED_MODULE_0__.CONFIG.ALLOWED_PAGES.some((allowedPath) =>
+    path.startsWith(allowedPath)
+  )
+}
+
+
+
+
+/***/ }),
+
+/***/ "./src/components/removing/hideAndRemoveElement.js":
+/*!*********************************************************!*\
+  !*** ./src/components/removing/hideAndRemoveElement.js ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   hideAndRemoveElement: () => (/* binding */ hideAndRemoveElement)
+/* harmony export */ });
+function hideAndRemoveElement(element) {
+  const renderer = element.closest(
+    "ytd-rich-item-renderer, ytd-video-renderer, ytd-reel-item-renderer"
+  )
+
+  if (renderer) {
+    // More robust blocking
+    renderer.setAttribute("data-yt-filter-blocked", "true")
+    renderer.style.transition = "all 0.5s ease"
+    renderer.style.opacity = "0"
+    renderer.style.transform = "scale(0.8)"
+
+    setTimeout(() => {
+      if (renderer.parentNode) {
+        renderer.remove()
+
+        // Add permanent style to prevent re-adding
+        const style = document.createElement("style")
+        style.textContent = `
+          ytd-rich-item-renderer[data-yt-filter-blocked="true"], 
+          ytd-video-renderer[data-yt-filter-blocked="true"],
+          ytd-reel-item-renderer[data-yt-filter-blocked="true"] {
+            display: none !important;
+            height: 0 !important;
+            overflow: hidden !important;
+          }
+        `
+        document.head.appendChild(style)
+      }
+    }, 500)
+  }
+}
+
+
+
+/***/ }),
+
+/***/ "./src/components/storage/getFromStorage.js":
+/*!**************************************************!*\
+  !*** ./src/components/storage/getFromStorage.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getFromStorage: () => (/* binding */ getFromStorage)
+/* harmony export */ });
+function getFromStorage(keys) {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get(keys, (result) => resolve(result))
+  })
+}
+
+
+/***/ }),
+
+/***/ "./src/components/utils/debounce.js":
+/*!******************************************!*\
+  !*** ./src/components/utils/debounce.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   debounce: () => (/* binding */ debounce)
+/* harmony export */ });
+function debounce(func, delay) {
+  let timeoutId
+  return function () {
+    const context = this
+    const args = arguments
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => func.apply(context, args), delay)
+  }
+}
+
+
+/***/ }),
+
 /***/ "./src/content/config.js":
 /*!*******************************!*\
   !*** ./src/content/config.js ***!
@@ -38,124 +207,29 @@ const CONFIG = {
 
 /***/ }),
 
-/***/ "./src/content/filters.js":
-/*!********************************!*\
-  !*** ./src/content/filters.js ***!
-  \********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   filterContent: () => (/* binding */ filterContent),
-/* harmony export */   shouldApplyFiltering: () => (/* binding */ shouldApplyFiltering)
-/* harmony export */ });
-/* harmony import */ var _config_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config.js */ "./src/content/config.js");
-
-
-function shouldApplyFiltering(path) {
-  return _config_js__WEBPACK_IMPORTED_MODULE_0__.CONFIG.ALLOWED_PAGES.some((allowedPath) =>
-    path.startsWith(allowedPath)
-  )
-}
-
-function isBlocked(title, blockedKeywords) {
-  return blockedKeywords.some((keyword) =>
-    title.includes(keyword.toLowerCase())
-  )
-}
-
-function hideAndRemoveElement(element) {
-  const renderer = element.closest(
-    "ytd-rich-item-renderer, ytd-video-renderer, ytd-reel-item-renderer"
-  )
-
-  if (renderer) {
-    // More robust blocking
-    renderer.setAttribute("data-yt-filter-blocked", "true")
-    renderer.style.transition = "all 0.5s ease"
-    renderer.style.opacity = "0"
-    renderer.style.transform = "scale(0.8)"
-
-    setTimeout(() => {
-      if (renderer.parentNode) {
-        renderer.remove()
-
-        // Add permanent style to prevent re-adding
-        const style = document.createElement("style")
-        style.textContent = `
-          ytd-rich-item-renderer[data-yt-filter-blocked="true"], 
-          ytd-video-renderer[data-yt-filter-blocked="true"],
-          ytd-reel-item-renderer[data-yt-filter-blocked="true"] {
-            display: none !important;
-            height: 0 !important;
-            overflow: hidden !important;
-          }
-        `
-        document.head.appendChild(style)
-      }
-    }, 500)
-  }
-}
-
-function filterContent(blockedKeywords) {
-  if (!blockedKeywords || blockedKeywords.length === 0) return
-
-  _config_js__WEBPACK_IMPORTED_MODULE_0__.CONFIG.SELECTORS.videosAndShorts.forEach((selector) => {
-    const contentElements = document.querySelectorAll(selector)
-
-    contentElements.forEach((element) => {
-      const titleElement = element.querySelector(
-        "#video-title, #video-title-link, .ShortsLockupViewModelHostMetadataTitle a"
-      )
-
-      let title = ""
-
-      // Check textContent or aria-label for title
-      if (titleElement) {
-        title = titleElement.textContent.trim()
-      } else if (element.hasAttribute("aria-label")) {
-        title = element.getAttribute("aria-label").trim()
-      }
-
-      if (!title) return // Skip if no title is found
-
-      if (isBlocked(title, blockedKeywords)) {
-        hideAndRemoveElement(element)
-      }
-    })
-  })
-}
-
-
-
-
-/***/ }),
-
-/***/ "./src/content/pageObserver.js":
-/*!*************************************!*\
-  !*** ./src/content/pageObserver.js ***!
-  \*************************************/
+/***/ "./src/content/observePageChanges.js":
+/*!*******************************************!*\
+  !*** ./src/content/observePageChanges.js ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   observePageChanges: () => (/* binding */ observePageChanges)
 /* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.js */ "./src/content/utils.js");
-/* harmony import */ var _filters_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./filters.js */ "./src/content/filters.js");
-/* harmony import */ var _storage_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./storage.js */ "./src/content/storage.js");
-
+/* harmony import */ var _components_utils_debounce_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/utils/debounce.js */ "./src/components/utils/debounce.js");
+/* harmony import */ var _components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/filtering/filterContent.js */ "./src/components/filtering/filterContent.js");
 
 
 
 function observePageChanges() {
   const observer = new MutationObserver(
-    (0,_utils_js__WEBPACK_IMPORTED_MODULE_0__.debounce)(function () {
+    (0,_components_utils_debounce_js__WEBPACK_IMPORTED_MODULE_0__.debounce)(function () {
       chrome.storage.sync.get(["blockedKeywords"], function (filters) {
         if (!filters.blockedKeywords || filters.blockedKeywords.length === 0)
           return
 
-        ;(0,_filters_js__WEBPACK_IMPORTED_MODULE_1__.filterContent)(filters.blockedKeywords)
+        ;(0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_1__.filterContent)(filters.blockedKeywords)
       })
     }, 300)
   )
@@ -166,55 +240,6 @@ function observePageChanges() {
   })
 }
 
-
-/***/ }),
-
-/***/ "./src/content/storage.js":
-/*!********************************!*\
-  !*** ./src/content/storage.js ***!
-  \********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getFromStorage: () => (/* binding */ getFromStorage),
-/* harmony export */   saveToStorage: () => (/* binding */ saveToStorage)
-/* harmony export */ });
-function getFromStorage(keys) {
-  return new Promise((resolve) => {
-    chrome.storage.sync.get(keys, (result) => resolve(result))
-  })
-}
-
-function saveToStorage(data) {
-  return new Promise((resolve) => {
-    chrome.storage.sync.set(data, () => resolve())
-  })
-}
-
-
-/***/ }),
-
-/***/ "./src/content/utils.js":
-/*!******************************!*\
-  !*** ./src/content/utils.js ***!
-  \******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   debounce: () => (/* binding */ debounce)
-/* harmony export */ });
-// Utility functions
-function debounce(func, delay) {
-  let timeoutId
-  return function () {
-    const context = this
-    const args = arguments
-    clearTimeout(timeoutId)
-    timeoutId = setTimeout(() => func.apply(context, args), delay)
-  }
-}
 
 /***/ })
 
@@ -281,37 +306,32 @@ var __webpack_exports__ = {};
   !*** ./src/content/main.js ***!
   \*****************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _config_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config.js */ "./src/content/config.js");
-/* harmony import */ var _storage_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./storage.js */ "./src/content/storage.js");
-/* harmony import */ var _pageObserver_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./pageObserver.js */ "./src/content/pageObserver.js");
-/* harmony import */ var _filters_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./filters.js */ "./src/content/filters.js");
-
+/* harmony import */ var _components_storage_getFromStorage_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/storage/getFromStorage.js */ "./src/components/storage/getFromStorage.js");
+/* harmony import */ var _observePageChanges_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./observePageChanges.js */ "./src/content/observePageChanges.js");
+/* harmony import */ var _components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/filtering/filterContent.js */ "./src/components/filtering/filterContent.js");
+/* harmony import */ var _components_filtering_shouldApplyFiltering_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/filtering/shouldApplyFiltering.js */ "./src/components/filtering/shouldApplyFiltering.js");
 
 
 
 
 
 async function init() {
-  // Check if filtering should occur
-  if (!(0,_filters_js__WEBPACK_IMPORTED_MODULE_3__.shouldApplyFiltering)(window.location.pathname)) return
+  if (!(0,_components_filtering_shouldApplyFiltering_js__WEBPACK_IMPORTED_MODULE_3__.shouldApplyFiltering)(window.location.pathname)) return
 
-  // Initial content filtering
   let blockedKeywords = []
   if (typeof chrome !== "undefined" && chrome.storage) {
     try {
-      const storageData = await (0,_storage_js__WEBPACK_IMPORTED_MODULE_1__.getFromStorage)(["blockedKeywords"])
+      const storageData = await (0,_components_storage_getFromStorage_js__WEBPACK_IMPORTED_MODULE_0__.getFromStorage)(["blockedKeywords"])
       blockedKeywords = storageData.blockedKeywords || []
     } catch (err) {
       console.error("Chrome not defined at this point", err)
     }
   }
-  (0,_filters_js__WEBPACK_IMPORTED_MODULE_3__.filterContent)(blockedKeywords)
+  (0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_2__.filterContent)(blockedKeywords)
 
-  // Start observing page changes
-  ;(0,_pageObserver_js__WEBPACK_IMPORTED_MODULE_2__.observePageChanges)()
+  ;(0,_observePageChanges_js__WEBPACK_IMPORTED_MODULE_1__.observePageChanges)()
 }
 
-// Initialize on page load
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init)
     console.log("This is filtering YOUTHOOB... ALERTTTTTT!")

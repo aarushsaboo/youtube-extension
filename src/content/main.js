@@ -1,14 +1,11 @@
-import { CONFIG } from "./config.js"
-import { getFromStorage } from "./storage.js"
-import { observePageChanges } from "./pageObserver.js"
-import { filterContent } from "./filters.js"
-import { shouldApplyFiltering } from "./filters.js"
+import { getFromStorage } from "../components/storage/getFromStorage.js"
+import { observePageChanges } from "./observePageChanges.js"
+import { filterContent } from "../components/filtering/filterContent.js"
+import { shouldApplyFiltering } from "../components/filtering/shouldApplyFiltering.js"
 
 async function init() {
-  // Check if filtering should occur
   if (!shouldApplyFiltering(window.location.pathname)) return
 
-  // Initial content filtering
   let blockedKeywords = []
   if (typeof chrome !== "undefined" && chrome.storage) {
     try {
@@ -20,11 +17,9 @@ async function init() {
   }
   filterContent(blockedKeywords)
 
-  // Start observing page changes
   observePageChanges()
 }
 
-// Initialize on page load
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init)
     console.log("This is filtering YOUTHOOB... ALERTTTTTT!")
