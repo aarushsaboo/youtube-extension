@@ -593,8 +593,9 @@ async function init() {
     }
   }
   (0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_2__.filterContent)(blockedKeywords)
-  // applyColorChanger(colorScheme)
 
+  
+  ;(0,_colorTheme_colorChanger_colorChanger_js__WEBPACK_IMPORTED_MODULE_4__.applyColorChanger)(colorScheme)
   ;(0,_observePageChanges_js__WEBPACK_IMPORTED_MODULE_1__.observePageChanges)()
 }
 
@@ -616,15 +617,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 // Optional: Initial color scheme application on page load
-function initColorScheme() {
-  chrome.storage.sync.get(['colorScheme'], (result) => {
-    const colorScheme = result.colorScheme || 'light';
-    (0,_colorTheme_colorChanger_colorChanger_js__WEBPACK_IMPORTED_MODULE_4__.applyColorChanger)(colorScheme);
-  });
-}
+// function initColorScheme() {
+//   chrome.storage.sync.get(['colorScheme'], (result) => {
+//     const colorScheme = result.colorScheme || 'light';
+//     applyColorChanger(colorScheme);
+//   });
+// }
 
-// Run on initial page load
-initColorScheme();
+// // Run on initial page load
+// initColorScheme();
 })();
 
 /******/ })()
