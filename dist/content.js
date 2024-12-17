@@ -593,7 +593,7 @@ async function init() {
     }
   }
   (0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_2__.filterContent)(blockedKeywords)
-  ;(0,_colorTheme_colorChanger_colorChanger_js__WEBPACK_IMPORTED_MODULE_4__.applyColorChanger)(colorScheme)
+  // applyColorChanger(colorScheme)
 
   ;(0,_observePageChanges_js__WEBPACK_IMPORTED_MODULE_1__.observePageChanges)()
 }
@@ -605,6 +605,26 @@ if (document.readyState === "loading") {
   init()
 }
 
+
+//new
+// Listen for color scheme change messages
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'changeColorScheme') {
+    // Immediately apply color changes
+    (0,_colorTheme_colorChanger_colorChanger_js__WEBPACK_IMPORTED_MODULE_4__.applyColorChanger)(message.colorScheme);
+  }
+});
+
+// Optional: Initial color scheme application on page load
+function initColorScheme() {
+  chrome.storage.sync.get(['colorScheme'], (result) => {
+    const colorScheme = result.colorScheme || 'light';
+    (0,_colorTheme_colorChanger_colorChanger_js__WEBPACK_IMPORTED_MODULE_4__.applyColorChanger)(colorScheme);
+  });
+}
+
+// Run on initial page load
+initColorScheme();
 })();
 
 /******/ })()

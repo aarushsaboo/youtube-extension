@@ -19,7 +19,6 @@ async function init() {
     }
   }
   filterContent(blockedKeywords)
-  applyColorChanger(colorScheme)
 
   observePageChanges()
 }
@@ -30,3 +29,24 @@ if (document.readyState === "loading") {
 } else {
   init()
 }
+
+
+//new
+// Listen for color scheme change messages
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'changeColorScheme') {
+    // Immediately apply color changes
+    applyColorChanger(message.colorScheme);
+  }
+});
+
+// Optional: Initial color scheme application on page load
+function initColorScheme() {
+  chrome.storage.sync.get(['colorScheme'], (result) => {
+    const colorScheme = result.colorScheme || 'light';
+    applyColorChanger(colorScheme);
+  });
+}
+
+// Run on initial page load
+initColorScheme();

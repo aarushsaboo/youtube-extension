@@ -92,6 +92,16 @@ document.addEventListener("DOMContentLoaded", function () {
         colorScheme: selectedColorScheme,
       },
       function () {
+        // Send message to all YouTube tabs to update color scheme
+        chrome.tabs.query({ url: "*://*.youtube.com/*" }, function (tabs) {
+          tabs.forEach(function (tab) {
+            chrome.tabs.sendMessage(tab.id, {
+              action: "changeColorScheme",
+              colorScheme: selectedColorScheme,
+            })
+          })
+        })
+        
         saveFiltersBtn.textContent = "Saved!"
         saveFiltersBtn.style.backgroundColor = "green"
         setTimeout(() => {
