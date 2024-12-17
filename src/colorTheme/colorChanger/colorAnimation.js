@@ -1,27 +1,77 @@
 function colorAnimation() {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          console.log("Added node:", node)
+        })
+        mutation.removedNodes.forEach((node) => {
+          console.log("Removed node:", node)
+        })
+      })
+    })
+
+    observer.observe(document.body, { childList: true, subtree: true })
+    console.log("Monitoring for dynamically added elements...")
+
+    
   const styleElement = document.createElement("style")
   styleElement.id = "youtube-custom-background"
-  styleElement.textContent = `
+    styleElement.textContent = `
+    /*body*/
+    ytd-app{
+        background-color: #2b437c !important;
+    }
 
-    /* Target YouTube's sidebar */
-    #guide-content,
+    /* shorts go up or down + All, Music, Gaming, Dramedy Categories on home page*/
+    .navigation-container, #chips-content{
+        background-color: #2b437c !important;
+    }
+
+    /* Sidebar buttons + 2nd sidebar's categories & its header & its footer & its inner stuff + 2nd sidebar's additional stuff */
+    #items, ytd-guide-section-renderer, #guide-content.ytd-app, ytd-guide-renderer #footer, #guide-inner-content{
+        background-color: #2b437c !important;
+    }
+
+    /* home page multiple categories chip */
+    ytd-feed-filter-chip-bar-renderer, #right-arrow-button, #left-arrow-button, #right-arrow.ytd-feed-filter-chip-bar-renderer::before{
+        background-color: #2b437c !important;
+    }
+
+    /* home page multiple categories chip Black curved portion */
+    #right-arrow.ytd-feed-filter-chip-bar-renderer::before, #left-arrow.ytd-feed-filter-chip-bar-renderer::after{
+        background: transparent !important;
+    }
+
+    /* stupid bleeding thing */
+    #columns{
+        background: #2b437c !important;
+    }
+
+    /*sidebar*/
     ytd-mini-guide-renderer {
-      background: linear-gradient( #323264, #643264) !important;
+      background-color: #2b437c !important;
     }
 
-    /* Target the top navbar */
+    /*navbar*/
     #container {
-        background: linear-gradient( #323264, #643264);
+        background-color: #2b437c !important;
     }
 
-    /* Optional: Add a subtle glow effect */
-    #guide-content,
-    #container {
-    background: linear-gradient( #323264, #643264);
-}
-    
+    /*buttons in the sidebar*/
     ytd-mini-guide-entry-renderer{
-    background: transparent;
+        background-color: transparent;
+    }
+    ytd-mini-guide-entry-renderer yt-icon{
+        color: #b0c4fc !important;
+    }
+    /*all the rest buttons*/
+    yt-touch-feedback-shape{
+        background-color: #b0c4fc !important;
+    }
+
+    yt-button-shape button{
+        /*background: #ffffff !important;*/
+        color: rgb(176, 196, 252, 1) !important;
     }
   `
 
