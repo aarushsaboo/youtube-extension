@@ -3,6 +3,7 @@ import { observePageChanges } from "./observePageChanges.js"
 import { filterContent } from "../components/filtering/filterContent.js"
 import { shouldApplyFiltering } from "../components/filtering/shouldApplyFiltering.js"
 import { applyColorChanger } from "../colorTheme/colorChanger/colorChanger.js"
+import { colorAnimation } from "../colorTheme/colorChanger/colorAnimation.js"
 
 async function init() {
   if (!shouldApplyFiltering(window.location.pathname)) return
@@ -21,7 +22,8 @@ async function init() {
   filterContent(blockedKeywords)
 
   
-  applyColorChanger(colorScheme)
+  // applyColorChanger(colorScheme)
+  colorAnimation()
   observePageChanges()
 }
 
@@ -38,6 +40,7 @@ if (document.readyState === "loading") {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'changeColorScheme') {
     // Immediately apply color changes
-    applyColorChanger(message.colorScheme);
+    // applyColorChanger(message.colorScheme);
+    colorAnimation()
   }
 });

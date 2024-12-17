@@ -2,6 +2,60 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/colorTheme/colorChanger/colorAnimation.js":
+/*!*******************************************************!*\
+  !*** ./src/colorTheme/colorChanger/colorAnimation.js ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   colorAnimation: () => (/* binding */ colorAnimation)
+/* harmony export */ });
+function colorAnimation() {
+  const styleElement = document.createElement("style")
+  styleElement.id = "youtube-custom-background"
+  styleElement.textContent = `
+
+    /* Target YouTube's sidebar */
+    #guide-content,
+    ytd-mini-guide-renderer {
+      background: linear-gradient( #323264, #643264) !important;
+    }
+
+    /* Target the top navbar */
+    #container {
+        background: linear-gradient( #323264, #643264);
+    }
+
+    /* Optional: Add a subtle glow effect */
+    #guide-content,
+    #container {
+    background: linear-gradient( #323264, #643264);
+}
+    
+    ytd-mini-guide-entry-renderer{
+    background: transparent;
+    }
+  `
+
+  // Remove any existing custom background style
+  const existingStyle = document.getElementById("youtube-custom-background")
+  if (existingStyle) {
+    existingStyle.remove()
+  }
+
+  // Append the new style
+  document.head.appendChild(styleElement)
+
+  console.log(`Applied color animation to YouTube sidebar and navbar.`)
+}
+
+
+
+
+/***/ }),
+
 /***/ "./src/colorTheme/colorChanger/colorChanger.js":
 /*!*****************************************************!*\
   !*** ./src/colorTheme/colorChanger/colorChanger.js ***!
@@ -572,6 +626,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/filtering/filterContent.js */ "./src/components/filtering/filterContent.js");
 /* harmony import */ var _components_filtering_shouldApplyFiltering_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/filtering/shouldApplyFiltering.js */ "./src/components/filtering/shouldApplyFiltering.js");
 /* harmony import */ var _colorTheme_colorChanger_colorChanger_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../colorTheme/colorChanger/colorChanger.js */ "./src/colorTheme/colorChanger/colorChanger.js");
+/* harmony import */ var _colorTheme_colorChanger_colorAnimation_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../colorTheme/colorChanger/colorAnimation.js */ "./src/colorTheme/colorChanger/colorAnimation.js");
+
 
 
 
@@ -595,7 +651,8 @@ async function init() {
   (0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_2__.filterContent)(blockedKeywords)
 
   
-  ;(0,_colorTheme_colorChanger_colorChanger_js__WEBPACK_IMPORTED_MODULE_4__.applyColorChanger)(colorScheme)
+  // applyColorChanger(colorScheme)
+  ;(0,_colorTheme_colorChanger_colorAnimation_js__WEBPACK_IMPORTED_MODULE_5__.colorAnimation)()
   ;(0,_observePageChanges_js__WEBPACK_IMPORTED_MODULE_1__.observePageChanges)()
 }
 
@@ -612,20 +669,11 @@ if (document.readyState === "loading") {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'changeColorScheme') {
     // Immediately apply color changes
-    (0,_colorTheme_colorChanger_colorChanger_js__WEBPACK_IMPORTED_MODULE_4__.applyColorChanger)(message.colorScheme);
+    // applyColorChanger(message.colorScheme);
+    (0,_colorTheme_colorChanger_colorAnimation_js__WEBPACK_IMPORTED_MODULE_5__.colorAnimation)()
   }
 });
 
-// Optional: Initial color scheme application on page load
-// function initColorScheme() {
-//   chrome.storage.sync.get(['colorScheme'], (result) => {
-//     const colorScheme = result.colorScheme || 'light';
-//     applyColorChanger(colorScheme);
-//   });
-// }
-
-// // Run on initial page load
-// initColorScheme();
 })();
 
 /******/ })()
