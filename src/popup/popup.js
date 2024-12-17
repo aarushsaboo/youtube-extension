@@ -44,6 +44,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   )
 
+  // new
+  const colorScheme = document.getElementById("colorSchemeSelect")
+  colorScheme.addEventListener("click", function () {
+      const selectedColorScheme = document.getElementById("colorSchemeSelect").value
+      chrome.storage.sync.set({
+        colorScheme: selectedColorScheme,
+      }, function () {
+        console.log("Saved")
+        // Send message to all YouTube tabs to update color scheme
+        chrome.tabs.query({ url: "*://*.youtube.com/*" }, function (tabs) {
+          tabs.forEach(function (tab) {
+            chrome.tabs.sendMessage(tab.id, {
+              action: "changeColorScheme",
+              colorScheme: selectedColorScheme,
+            })
+          })
+        })
+      })
+  })
+
   // Add keyword functionality
   addKeywordBtn.addEventListener("click", function () {
     const keyword = keywordInput.value.trim()
@@ -79,8 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
     ).id
     console.log("Saving animation style:", selectedAnimationStyle)
 
-    const selectedColorScheme = document.getElementById("colorSchemeSelect").value
-
+    
 
     // Save filters to storage
     chrome.storage.sync.set(
@@ -89,19 +108,9 @@ document.addEventListener("DOMContentLoaded", function () {
         blockedCategory: categoryFilter.value,
         restrictAdult: restrictAdultCheckbox.checked,
         animationStyle: selectedAnimationStyle,
-        colorScheme: selectedColorScheme,
       },
       function () {
-        // Send message to all YouTube tabs to update color scheme
-        chrome.tabs.query({ url: "*://*.youtube.com/*" }, function (tabs) {
-          tabs.forEach(function (tab) {
-            chrome.tabs.sendMessage(tab.id, {
-              action: "changeColorScheme",
-              colorScheme: selectedColorScheme,
-            })
-          })
-        })
-        
+
         saveFiltersBtn.textContent = "Saved!"
         saveFiltersBtn.style.backgroundColor = "green"
         setTimeout(() => {

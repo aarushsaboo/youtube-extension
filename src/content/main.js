@@ -23,7 +23,7 @@ async function init() {
 
   
   // applyColorChanger(colorScheme)
-  colorAnimation()
+  colorAnimation(colorScheme)
   observePageChanges()
 }
 
@@ -41,6 +41,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'changeColorScheme') {
     // Immediately apply color changes
     // applyColorChanger(message.colorScheme);
-    colorAnimation()
+    colorAnimation(message.colorScheme)
   }
 });
