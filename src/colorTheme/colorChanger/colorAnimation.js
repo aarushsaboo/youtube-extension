@@ -108,15 +108,6 @@ function colorAnimation(scheme = "dark") {
     ytd-mini-guide-entry-renderer yt-icon{
         color: ${secondaryColor} !important;
     }
-    /*all the rest buttons...make it specific!!
-    yt-touch-feedback-shape{
-        background-color: ${secondaryColor} !important;
-    }*/
-
-    /* sidebar buttons for homepage
-    yt-button-shape button{
-        color: ${secondaryColor} !important;
-    }*/
 
     /* input field */
     yt-searchbox .ytSearchboxComponentInputBoxDark{
@@ -144,6 +135,11 @@ function colorAnimation(scheme = "dark") {
     ytd-continuation-item-renderer .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--text {
         color: ${secondaryColor} !important;
     }
+
+    /* youtube logo part with an id */
+    #youtube-paths_yt7{
+        color: white !important;
+    }
   `
 
   // Remove any existing custom background style
@@ -158,7 +154,7 @@ function colorAnimation(scheme = "dark") {
   /* youtube logo */
   document
     .querySelector(
-      "ytd-topbar-logo-renderer yt-icon span svg g:nth-of-type(1) path"
+      "ytd-topbar-logo-renderer yt-icon span svg g:not(#youtube-paths_yt7) path"
     )
     .setAttribute("fill", `${secondaryColor}`)
 

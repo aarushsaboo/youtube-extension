@@ -122,15 +122,6 @@ function colorAnimation(scheme = "dark") {
     ytd-mini-guide-entry-renderer yt-icon{
         color: ${secondaryColor} !important;
     }
-    /*all the rest buttons...make it specific!!
-    yt-touch-feedback-shape{
-        background-color: ${secondaryColor} !important;
-    }*/
-
-    /* sidebar buttons for homepage
-    yt-button-shape button{
-        color: ${secondaryColor} !important;
-    }*/
 
     /* input field */
     yt-searchbox .ytSearchboxComponentInputBoxDark{
@@ -158,6 +149,11 @@ function colorAnimation(scheme = "dark") {
     ytd-continuation-item-renderer .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--text {
         color: ${secondaryColor} !important;
     }
+
+    /* youtube logo part with an id */
+    #youtube-paths_yt7{
+        color: white !important;
+    }
   `
 
   // Remove any existing custom background style
@@ -170,24 +166,11 @@ function colorAnimation(scheme = "dark") {
   document.head.appendChild(styleElement)
   
   /* youtube logo */
-  const gElements = document.querySelectorAll(
-    "ytd-topbar-logo-renderer yt-icon span svg g"
-  )
-
-  // Find the correct <g> element based on unique criteria
-  gElements.forEach((g) => {
-    const path = g.querySelector("path")
-    if (
-      path &&
-      path
-        .getAttribute("d")
-        .includes(
-          "M 14.4848 20 C 14.4848 20 23.5695 20 25.8229 19.4 C 27.0917 19.06 28.0459"
-        )
-    ) {
-      path.setAttribute("fill", "blue")
-    }
-  })
+  document
+    .querySelector(
+      "ytd-topbar-logo-renderer yt-icon span svg g:not(#youtube-paths_yt7) path"
+    )
+    .setAttribute("fill", `${secondaryColor}`)
 
 
   console.log(`Applied color animation for ${scheme} scheme.`)
