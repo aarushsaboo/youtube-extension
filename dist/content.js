@@ -60,10 +60,10 @@ function colorAnimation(scheme = "dark") {
       break
     case "dark":
     default:
-      primaryColor = "#2b437c"
-        secondaryColor = "#b0c4fc"
-          tertiaryColor = "#1f2535"
-          quaternaryColor = "#707689"
+      primaryColor = " #2b437c"
+        secondaryColor = " #b0c4fc"
+          tertiaryColor = " #1f2535"
+          quaternaryColor = " #707689"
       break
   }
 
@@ -94,6 +94,11 @@ function colorAnimation(scheme = "dark") {
     #right-arrow.ytd-feed-filter-chip-bar-renderer::before, #left-arrow.ytd-feed-filter-chip-bar-renderer::after{
         background: transparent !important;
     }
+    
+    /* chip with the categories */
+    yt-chip-cloud-chip-renderer yt-formatted-string{
+        color: ${secondaryColor} !important;
+    }
 
     /* stupid bleeding thing */
     #columns{
@@ -106,7 +111,7 @@ function colorAnimation(scheme = "dark") {
     }
 
     /*navbar*/
-    #container {
+    #masthead-container #container {
         background-color: ${primaryColor} !important;
     }
 
@@ -117,15 +122,15 @@ function colorAnimation(scheme = "dark") {
     ytd-mini-guide-entry-renderer yt-icon{
         color: ${secondaryColor} !important;
     }
-    /*all the rest buttons*/
+    /*all the rest buttons...make it specific!!
     yt-touch-feedback-shape{
         background-color: ${secondaryColor} !important;
-    }
+    }*/
 
-    /* sidebar buttons for homepage */
+    /* sidebar buttons for homepage
     yt-button-shape button{
         color: ${secondaryColor} !important;
-    }
+    }*/
 
     /* input field */
     yt-searchbox .ytSearchboxComponentInputBoxDark{
@@ -133,6 +138,25 @@ function colorAnimation(scheme = "dark") {
     }
     yt-searchbox .ytSearchboxComponentInputBoxDark input::placeholder{
         color: ${quaternaryColor} !important;
+    }
+    /* additional buttons: notification bell + sidebar buttons */
+    #masthead-container yt-icon-button svg, #guide-content yt-icon svg{
+        color: ${secondaryColor} !important;
+    }
+
+    /* comment section: replies style */
+    #replies #expander .expander-header yt-button-shape button .yt-spec-button-shape-next__button-text-content, #replies #expander .expander-header yt-button-shape button .yt-spec-button-shape-next__icon{
+        color: ${secondaryColor} !important;
+    }
+
+    /* comment section: attributed @ stuff */
+    yt-attributed-string>span>span>a{
+        color: ${secondaryColor} !important;
+    }
+
+    /* comment section: more replies style */
+    ytd-continuation-item-renderer .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--text {
+        color: ${secondaryColor} !important;
     }
   `
 
@@ -144,6 +168,27 @@ function colorAnimation(scheme = "dark") {
 
   // Append the new style
   document.head.appendChild(styleElement)
+  
+  /* youtube logo */
+  const gElements = document.querySelectorAll(
+    "ytd-topbar-logo-renderer yt-icon span svg g"
+  )
+
+  // Find the correct <g> element based on unique criteria
+  gElements.forEach((g) => {
+    const path = g.querySelector("path")
+    if (
+      path &&
+      path
+        .getAttribute("d")
+        .includes(
+          "M 14.4848 20 C 14.4848 20 23.5695 20 25.8229 19.4 C 27.0917 19.06 28.0459"
+        )
+    ) {
+      path.setAttribute("fill", "blue")
+    }
+  })
+
 
   console.log(`Applied color animation for ${scheme} scheme.`)
 }
