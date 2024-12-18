@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   )
 
-  // new
+  // select color scheme
   const colorScheme = document.getElementById("colorSchemeSelect")
   colorScheme.addEventListener("click", function () {
       const selectedColorScheme = document.getElementById("colorSchemeSelect").value

@@ -14,56 +14,99 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 function colorAnimation(scheme = "dark") {
   let primaryColor, secondaryColor, tertiaryColor, quaternaryColor
+  // primary is for the background, secondary is for the icons & text, tertiary is for input, quaternary is for the input's placeholder
 
   switch (scheme) {
-    case "light":
-      primaryColor = "#f0f0f0"
-          secondaryColor = "#333333"
-          tertiaryColor = "#282828"
-          quaternaryColor = "#dde4e2"
+    case "emeraldviolet":
+      primaryColor = "#3f384c"
+      secondaryColor = "#d4bbff"
+      tertiaryColor = "#292335"
+      quaternaryColor = "#cdc2db"
       break
-    case "custom":
-      primaryColor = "#3a6073"
-          secondaryColor = "#16222a"
-          tertiaryColor = "#282828"
-          quaternaryColor = "#dde4e2"
+    case "ladypink":
+      primaryColor = "#493545"
+      secondaryColor = "#f6b0ea"
+      tertiaryColor = "#32202f"
+      quaternaryColor = "#dabfd2"
       break
-    case "custom1":
-      primaryColor = "#4b6cb7"
-          secondaryColor = "#182848"
-          tertiaryColor = "#282828"
-          quaternaryColor = "#dde4e2"
+    case "darkbrown":
+      primaryColor = "#46383a"
+      secondaryColor = "#ddbfc3"
+      tertiaryColor = "#2f2325"
+      quaternaryColor = "#d6c2c4"
+      break
+    case "pinkbrown":
+      primaryColor = "#4f3439"
+      secondaryColor = "#ffb1c0"
+      tertiaryColor = "#371f24"
+      quaternaryColor = "#e4bdc3"
+      break
+    case "skinbrown":
+      primaryColor = "#463931"
+      secondaryColor = "#dec1b1"
+      tertiaryColor = "#2f231c"
+      quaternaryColor = "#d7c2b8"
+      break
+    case "beautifulorange":
+      primaryColor = "#4f3625"
+      secondaryColor = "#ffb787"
+      tertiaryColor = "#362112"
+      quaternaryColor = "#e5bfa8"
+      break
+    case "yellowochre":
+      primaryColor = "#423b20"
+      secondaryColor = "#dec663"
+      tertiaryColor = "#2c250c"
+      quaternaryColor = "#d2c6a1"
+      break
+    case "guttergreen":
+      primaryColor = "#373d35"
+      secondaryColor = "#becab8"
+      tertiaryColor = "#212720"
+      quaternaryColor = "#c2c9bd"
+      break
+    case "olivegreen":
+      primaryColor = "#313f2c"
+      secondaryColor = "#a0d490"
+      tertiaryColor = "#1c2918"
+      quaternaryColor = "#bbcbb2"
       break
     case "brightgreen":
-      primaryColor = "#26403c"
-          secondaryColor = "#70d8cb"
-          tertiaryColor = "#0f2a27"
-          quaternaryColor = "#617c78"
+      primaryColor = "#27403c"
+      secondaryColor = "#74d7cb"
+      tertiaryColor = "#102a27"
+      quaternaryColor = "#b1ccc7"
       break
     case "dirtygreen":
       primaryColor = "#343d3f"
-          secondaryColor = "#b8cacd"
-          tertiaryColor = "#1e2729"
-          quaternaryColor = "#617c78"
+      secondaryColor = "#b8cacd"
+      tertiaryColor = "#1e2729"
+      quaternaryColor = "#bfc8ca"
       break
     case "blackngrey":
-      primaryColor = "#393b43"
-          secondaryColor = "#bcc6e1"
-          tertiaryColor = "#24262d"
-          quaternaryColor = "#75777f"
+      primaryColor = " #383b43"
+      secondaryColor = " #bac7e3"
+      tertiaryColor = "#23262d"
+      quaternaryColor = "#c4c6d0"
       break
     case "blacknwhite":
       primaryColor = "#3c3c3c"
-          secondaryColor = "#ffffff"
-          tertiaryColor = "#282828"
-          quaternaryColor = "#757575"
+      secondaryColor = "#a8c7fa"
+      tertiaryColor = "#282828"
+      quaternaryColor = "#c7c7c7"
       break
-    case "dark":
+    case "blacknwhite":
+      primaryColor = "#3c3c3c"
+      secondaryColor = "#a8c7fa"
+      tertiaryColor = "#282828"
+      quaternaryColor = "#c7c7c7"
+      break
+    case "gloriousblue":
     default:
       primaryColor = " #2b437c"
-        secondaryColor = " #b0c4fc"
-          tertiaryColor = " #1f2535"
-          quaternaryColor = " #707689"
+      secondaryColor = " #b0c4fc"
+      tertiaryColor = " #1f2535"
+      quaternaryColor = " #707689"
       break
   }
 
@@ -119,9 +162,10 @@ function colorAnimation(scheme = "dark") {
     ytd-mini-guide-entry-renderer{
         background-color: transparent;
     }
+    /*
     ytd-mini-guide-entry-renderer yt-icon{
         color: ${secondaryColor} !important;
-    }
+    }*/
 
     /* input field */
     yt-searchbox .ytSearchboxComponentInputBoxDark{
@@ -130,9 +174,13 @@ function colorAnimation(scheme = "dark") {
     yt-searchbox .ytSearchboxComponentInputBoxDark input::placeholder{
         color: ${quaternaryColor} !important;
     }
-    /* additional buttons: notification bell + sidebar buttons */
-    #masthead-container yt-icon-button svg, #guide-content yt-icon svg{
+    /* additional buttons: notification bell + sidebar buttons + Create button + Search & audio buttons */
+    #masthead-container yt-icon-button svg, #guide-content yt-icon svg, #masthead-container #end #buttons button, #container #center button{
         color: ${secondaryColor} !important;
+    }
+    /* removing main youtube icon's color that was assigned above */
+    #guide-content #header ytd-topbar-logo-renderer ytd-logo #logo-icon svg{
+      color: white !important;
     }
 
     /* comment section: replies style */
@@ -150,9 +198,24 @@ function colorAnimation(scheme = "dark") {
         color: ${secondaryColor} !important;
     }
 
-    /* youtube logo part with an id */
-    #youtube-paths_yt7{
-        color: white !important;
+    /* 2nd sidebar( with 4 buttons ) */
+    #items #endpoint > span{
+      color: ${secondaryColor} !important;
+    }
+    #items #icon > span > div > svg{
+      color: ${secondaryColor} !important;
+    }
+
+    /* video titles */
+    #video-title{
+    }
+    /* 1st sidebar(with many categories) text */
+    #endpoint > tp-yt-paper-item > yt-formatted-string{
+      color: ${secondaryColor} !important;
+    }
+    /* account details */
+    ytd-compact-link-renderer #endpoint > tp-yt-paper-item{
+      background-color: #282828;
     }
   `
 
@@ -165,13 +228,15 @@ function colorAnimation(scheme = "dark") {
   // Append the new style
   document.head.appendChild(styleElement)
   
-  /* youtube logo */
-  document
-    .querySelector(
-      "ytd-topbar-logo-renderer yt-icon span svg g:not(#youtube-paths_yt7) path"
-    )
-    .setAttribute("fill", `${secondaryColor}`)
-
+  /* youtube logo
+  const logoPaths = document.querySelectorAll(
+    "#logo-icon g:nth-child(1) > path:nth-child(1)"
+  )
+  logoPaths.forEach((path) => {
+    path.setAttribute("fill", "blue")
+  })
+  */
+  
 
   console.log(`Applied color animation for ${scheme} scheme.`)
 }
@@ -763,7 +828,7 @@ async function init() {
   if (!(0,_components_filtering_shouldApplyFiltering_js__WEBPACK_IMPORTED_MODULE_3__.shouldApplyFiltering)(window.location.pathname)) return
 
   let blockedKeywords = []
-  let colorScheme = "light"
+  let colorScheme = "gloriousblue"
   if (typeof chrome !== "undefined" && chrome.storage) {
     try {
       const storageData = await (0,_components_storage_getFromStorage_js__WEBPACK_IMPORTED_MODULE_0__.getFromStorage)(["blockedKeywords", "colorScheme"])

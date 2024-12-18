@@ -9,7 +9,7 @@ async function init() {
   if (!shouldApplyFiltering(window.location.pathname)) return
 
   let blockedKeywords = []
-  let colorScheme = "light"
+  let colorScheme = "gloriousblue"
   if (typeof chrome !== "undefined" && chrome.storage) {
     try {
       const storageData = await getFromStorage(["blockedKeywords", "colorScheme"])
