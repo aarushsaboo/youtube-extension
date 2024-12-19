@@ -1,4 +1,4 @@
-import { applyDisplayNoneStyle, applyCrossedOutStyle } from "../styles/applyStyles"
+import { applyDisplayNoneStyle, applyCrossedOutStyle, applyPremiumBlockStyle } from "../styles/applyStyles"
 function hideAndRemoveElement(element) {
 
   chrome.storage.sync.get(
@@ -28,6 +28,10 @@ function hideAndRemoveElement(element) {
 
       case "crossedOut":
         applyCrossedOutStyle(renderer)
+        break
+      
+      case "premiumBlock":
+        applyPremiumBlockStyle(renderer)
         break
 
       default:
