@@ -217,6 +217,16 @@ function colorAnimation(scheme = "dark") {
     ytd-compact-link-renderer #endpoint > tp-yt-paper-item{
       background-color: #282828;
     }
+
+    /* Dark mode & light mode*/
+    /* comment text content, */
+    #content-text{
+      color: white;
+    }
+    /* a lot of things */
+    .yt-spec-button-shape-next--mono.yt-spec-button-shape-next--text{
+      color: white;
+    }
   `
 
   // Remove any existing custom background style
@@ -227,7 +237,7 @@ function colorAnimation(scheme = "dark") {
 
   // Append the new style
   document.head.appendChild(styleElement)
-  
+
   /* youtube logo
   const logoPaths = document.querySelectorAll(
     "#logo-icon g:nth-child(1) > path:nth-child(1)"
@@ -236,7 +246,26 @@ function colorAnimation(scheme = "dark") {
     path.setAttribute("fill", "blue")
   })
   */
-  
+  /* black thing blocking. Remove the #cinematics element from the DOM*/
+  const removeCinematics = () => {
+    const cinematicsElement = document.querySelector("#cinematics")
+    if (cinematicsElement) {
+      cinematicsElement.remove()
+      console.log("Removed #cinematics element")
+    }
+    const adElement = document.querySelector("masthead-ad")
+    if (adElement) {
+      adElement.remove()
+      console.log("Removed #masthead-ad element")
+    }
+  }
+
+  // Set up a mutation observer to detect the addition of #cinematics
+  const observer = new MutationObserver(removeCinematics)
+  observer.observe(document.body, { childList: true, subtree: true })
+
+  // Initial check in case the element is already present
+  removeCinematics()
 
   console.log(`Applied color animation for ${scheme} scheme.`)
 }

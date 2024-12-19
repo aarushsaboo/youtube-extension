@@ -4,6 +4,7 @@ import { filterContent } from "../components/filtering/filterContent.js"
 import { shouldApplyFiltering } from "../components/filtering/shouldApplyFiltering.js"
 import { applyColorChanger } from "../colorTheme/colorChanger/colorChanger.js"
 import { colorAnimation } from "../colorTheme/colorChanger/colorAnimation.js"
+import { removeAds } from "../removeAds/removeAds.js"
 
 async function init() {
   if (!shouldApplyFiltering(window.location.pathname)) return
