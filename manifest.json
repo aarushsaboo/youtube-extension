@@ -4,7 +4,14 @@
   "version": "1.0",
   "description": "A Google extension for making YouTube a more peaceful and productive experience.",
   "permissions": ["activeTab", "storage", "declarativeNetRequest"],
-  "host_permissions": ["https://www.youtube.com/*"],
+  "host_permissions": [
+    "*://*.youtube.com/*",
+    "*://*.googlevideo.com/*",
+    "*://*.doubleclick.net/*",
+    "*://*.google.com/*",
+    "*://*.googleadservices.com/*",
+    "*://*.google-analytics.com/*"
+  ],
   "action": {
     "default_popup": "dist/popup.html",
     "default_icon": {

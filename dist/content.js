@@ -227,6 +227,10 @@ function colorAnimation(scheme = "dark") {
     .yt-spec-button-shape-next--mono.yt-spec-button-shape-next--text{
       color: white;
     }
+    /* youtube video heading, description */
+    ytd-watch-metadata, #description-inline-expander > yt-attributed-string  span > span:nth-child(1), #description-inline-expander > yt-attributed-string > span > span:nth-child(5), {
+      color: white;
+    }
   `
 
   // Remove any existing custom background style
@@ -252,11 +256,6 @@ function colorAnimation(scheme = "dark") {
     if (cinematicsElement) {
       cinematicsElement.remove()
       console.log("Removed #cinematics element")
-    }
-    const adElement = document.querySelector("masthead-ad")
-    if (adElement) {
-      adElement.remove()
-      console.log("Removed #masthead-ad element")
     }
   }
 
@@ -834,6 +833,64 @@ function observePageChanges() {
 }
 
 
+/***/ }),
+
+/***/ "./src/removeAds/removeAds.js":
+/*!************************************!*\
+  !*** ./src/removeAds/removeAds.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   removeAds: () => (/* binding */ removeAds)
+/* harmony export */ });
+// Constants for ad selectors
+const AD_SELECTORS = [
+  "ytd-rich-item-renderer:has(ytd-ad-slot-renderer)",
+  "ytd-ad-slot-renderer",
+  "#masthead-ad",
+  "#player-ads",
+  "#below ytd-merch-shelf-renderer",
+  "ytd-merch-shelf-renderer",
+  "ytd-banner-promo-renderer",
+  "ytd-statement-banner-renderer",
+  "ytd-masthead-prime-renderer",
+  ".ytd-rich-grid-renderer:has(ytd-ad-slot-renderer)",
+  ".video-ads.ytp-ad-module",
+  "#related ytd-compact-promoted-item-renderer",
+  "#related ytd-promoted-sparkles-web-renderer",
+]
+
+function removeAds() {
+  let removedCount = 0
+
+  AD_SELECTORS.forEach((selector) => {
+    const elements = document.querySelectorAll(selector)
+    elements.forEach((element) => {
+      element.remove()
+      removedCount++
+    })
+  })
+
+  // Remove parent containers that might be left empty
+  const cleanupSelectors = [
+    "ytd-rich-section-renderer:empty",
+    "ytd-shelf-renderer:empty",
+  ]
+
+  cleanupSelectors.forEach((selector) => {
+    const elements = document.querySelectorAll(selector)
+    elements.forEach((element) => element.remove())
+  })
+
+  if (removedCount > 0) {
+    console.log(`Removed ${removedCount} ad elements`)
+  }
+}
+
+
+
 /***/ })
 
 /******/ 	});
@@ -905,6 +962,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_filtering_shouldApplyFiltering_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/filtering/shouldApplyFiltering.js */ "./src/components/filtering/shouldApplyFiltering.js");
 /* harmony import */ var _colorTheme_colorChanger_colorChanger_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../colorTheme/colorChanger/colorChanger.js */ "./src/colorTheme/colorChanger/colorChanger.js");
 /* harmony import */ var _colorTheme_colorChanger_colorAnimation_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../colorTheme/colorChanger/colorAnimation.js */ "./src/colorTheme/colorChanger/colorAnimation.js");
+/* harmony import */ var _removeAds_removeAds_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../removeAds/removeAds.js */ "./src/removeAds/removeAds.js");
+
 
 
 
