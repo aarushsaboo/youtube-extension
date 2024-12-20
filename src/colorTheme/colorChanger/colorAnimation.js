@@ -205,6 +205,23 @@ function colorAnimation(scheme = "dark") {
     }
 
     /* Dark mode & light mode*/
+    /*buttons */
+    #center > yt-searchbox > button, #center > yt-searchbox > div.ytSearchboxComponentInputBox{
+      background-color: black !important;
+    }
+    /* text stuff*/
+    #guide-section-title, #video-title, #content > ytm-shorts-lockup-view-model-v2 > ytm-shorts-lockup-view-model > div > h3 > a > span, #title > h1 > yt-formatted-string, #info > span, #description-inline-expander > yt-attributed-string > span > span, #attributed-snippet-text > span > span, .shortsLockupViewModelHostOutsideMetadataEndpoint{
+      color: #f1f1f1 !important;
+    }
+      /* links */
+      #description-inline-expander > yt-attributed-string > span > span a, #info > a, .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--outline{
+        color: ${secondaryColor} !important;
+      }
+
+    /* secondary text styles */
+    #text > a, #vote-count-middle, #published-time-text > a, .translate-button.ytd-comment-view-model, .more-button.ytd-comment-view-model, .less-button.ytd-comment-view-model, .shortsLockupViewModelHostOutsideMetadataSubhead, #content > ytm-shorts-lockup-view-model-v2 > ytm-shorts-lockup-view-model > div > div.shortsLockupViewModelHostMetadataSubhead.shortsLockupViewModelHostOutsideMetadataSubhead > span, yt-formatted-string[has-link-only_]:not([force-default-style]) a.yt-simple-endpoint.yt-formatted-string, ytd-video-meta-block:not([inline-badges]) #metadata-line.ytd-video-meta-block span.ytd-video-meta-block, #owner-sub-count.ytd-video-owner-renderer, #metadata-line > span, #text-container, .badge-style-type-simple.ytd-badge-supported-renderer{
+      color: #aaaaaa !important;
+    }
     /* comment text content, */
     #content-text{
       color: white;
@@ -217,6 +234,28 @@ function colorAnimation(scheme = "dark") {
     ytd-watch-metadata, #description-inline-expander > yt-attributed-string  span > span:nth-child(1), #description-inline-expander > yt-attributed-string > span > span:nth-child(5), {
       color: white;
     }
+
+    /* shortcut to fixing everything */
+    html[darker-dark-theme], [darker-dark-theme] [light]{
+      --yt-spec-text-primary: white;
+    --yt-spec-text-primary-inverse: black;
+    }
+
+    /* hover styles */
+    #less-replies > yt-button-shape > button::hover{
+      background-color: transparent;
+    }
+      .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--text:hover{
+        background: transparent !important;
+      }
+        yt-chip-cloud-chip-renderer[chip-style=STYLE_DEFAULT], yt-chip-cloud-chip-renderer[chip-style=STYLE_HOME_FILTER], yt-chip-cloud-chip-renderer[chip-style=STYLE_COLOR_RED], yt-chip-cloud-chip-renderer[chip-style=STYLE_COLOR_GREEN], yt-chip-cloud-chip-renderer[chip-style=STYLE_COLOR_BLUE], yt-chip-cloud-chip-renderer[chip-style=STYLE_REFRESH_TO_NOVEL_CHIP], .yt-spec-button-shape-next--mono.yt-spec-button-shape-next--tonal, #voice-search-button > ytd-button-renderer > yt-button-shape > button{
+          background-color: #6d5d6a !important;
+        }
+
+      /* like buttons */
+      .yt-spec-button-shape-next--mono.yt-spec-button-shape-next--tonal{
+        color: ${secondaryColor} !important;
+      }
   `
 
   // Remove any existing custom background style

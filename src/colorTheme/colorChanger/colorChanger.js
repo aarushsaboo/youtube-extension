@@ -1,7 +1,7 @@
 export function applyColorChanger(colorScheme) {
   // Define more comprehensive color schemes
   const schemes = {
-    dark: {
+    emeraldviolet: {
       backgroundColor: "#181818",
       textColor: "#ffffff",
       secondaryBackgroundColor: "#212121",
@@ -9,7 +9,7 @@ export function applyColorChanger(colorScheme) {
       chipBackgroundColor: "#373737",
       chipTextColor: "#ffffff",
     },
-    light: {
+    ladypink: {
       backgroundColor: "#ffffff",
       textColor: "#030303",
       secondaryBackgroundColor: "#f9f9f9",
@@ -17,7 +17,7 @@ export function applyColorChanger(colorScheme) {
       chipBackgroundColor: "#f2f2f2",
       chipTextColor: "#030303",
     },
-    custom: {
+    darkbrown: {
       backgroundColor: "#f0e68c",
       textColor: "#00008b",
       secondaryBackgroundColor: "#fafad2",
@@ -25,7 +25,7 @@ export function applyColorChanger(colorScheme) {
       chipBackgroundColor: "#fff0f5",
       chipTextColor: "#00008b",
     },
-    custom1: {
+    pinkbrown: {
       backgroundColor: "#0f1020", // Deep midnight blue
       textColor: "#e0e0ff", // Soft light blue text
       secondaryBackgroundColor: "#1a1a30", // Slightly lighter midnight blue
@@ -35,7 +35,7 @@ export function applyColorChanger(colorScheme) {
     },
 
     // Custom2: Soft Pastel
-    custom2: {
+    skinbrown: {
       backgroundColor: "#f5f0ff", // Very light lavender
       textColor: "#333366", // Deep indigo
       secondaryBackgroundColor: "#e6e0f5", // Soft pastel lavender
@@ -45,7 +45,7 @@ export function applyColorChanger(colorScheme) {
     },
 
     // Custom3: Cyberpunk Neon
-    custom3: {
+    beautifulorange: {
       backgroundColor: "#0a0a1a", // Ultra-dark navy
       textColor: "#00ffff", // Bright cyan
       secondaryBackgroundColor: "#111128", // Slightly lighter dark navy
