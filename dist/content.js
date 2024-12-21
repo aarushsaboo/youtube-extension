@@ -323,12 +323,19 @@ function colorAnimation(scheme = "dark", theme) {
     }
     /* account details */
     ytd-compact-link-renderer #endpoint > tp-yt-paper-item{
-      background-color: ${theme === "dark" ? "#282828" : "#ffffff"} ;
+      background-color: ${theme === "dark" ? " #282828" : "#ffffff"} ;
     }
       /* creator comments */
       #author-comment-badge > ytd-author-comment-badge-renderer{
-        background: ${(0,_components_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_0__.convertToRGBA)(secondaryColor, 0.8)} !important;
+        background-color: ${
+          theme === "dark"
+            ? " rgba(255,255,255,0.1) !important"
+            : " rgba(0, 0, 0, 0.05) !important"
+        };
       }
+        #name #container #text-container yt-formatted-string{
+          color: ${secondaryColor} !important;
+        }
         /* show transcript button */
         .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--outline{
           color: ${secondaryColor} !important;
