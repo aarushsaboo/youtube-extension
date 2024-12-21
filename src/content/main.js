@@ -5,15 +5,33 @@ import { shouldApplyFiltering } from "../components/filtering/shouldApplyFilteri
 import { applyColorChanger } from "../colorTheme/colorChanger/colorChanger.js"
 import { colorAnimation } from "../colorTheme/colorChanger/colorAnimation.js"
 import { removeAds } from "../removeAds/removeAds.js"
+function detectYouTubeTheme() {
+  const isDarkTheme = document.documentElement.hasAttribute("dark")
+
+  const hasYtDarkClass =
+    document.documentElement.getAttribute("dark") === "true"
+
+  const backgroundColor = window.getComputedStyle(document.body).backgroundColor
+  const isDarkBackground =
+    backgroundColor === "rgb(15, 15, 15)" || backgroundColor === "#0f0f0f"
+
+  return isDarkTheme || hasYtDarkClass || isDarkBackground ? "dark" : "light"
+}
+
 
 async function init() {
   if (!shouldApplyFiltering(window.location.pathname)) return
 
   let blockedKeywords = []
   let colorScheme = "gloriousblue"
+  const detectedTheme = detectYouTubeTheme() // Detect the theme
+
   if (typeof chrome !== "undefined" && chrome.storage) {
     try {
-      const storageData = await getFromStorage(["blockedKeywords", "colorScheme"])
+      const storageData = await getFromStorage([
+        "blockedKeywords",
+        "colorScheme",
+      ])
       blockedKeywords = storageData.blockedKeywords || []
       colorScheme = storageData.colorScheme || "light"
     } catch (err) {
@@ -22,9 +40,8 @@ async function init() {
   }
   filterContent(blockedKeywords)
 
-  
   // applyColorChanger(colorScheme)
-  colorAnimation(colorScheme)
+  colorAnimation(colorScheme, detectedTheme)
   observePageChanges()
 }
 
@@ -42,49 +59,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'changeColorScheme') {
     // Immediately apply color changes
     // applyColorChanger(message.colorScheme);
-    colorAnimation(message.colorScheme)
+    const detectedTheme = detectYouTubeTheme() 
+    colorAnimation(message.colorScheme, detectedTheme)
   }
 });
-
-
-function detectYouTubeTheme() {
-  // Check if html element has the dark theme attribute
-  const isDarkTheme = document.documentElement.hasAttribute("dark")
-
-  // You can also check specific YouTube dark theme classes
-  const hasYtDarkClass =
-    document.documentElement.getAttribute("dark") === "true"
-
-  // Alternatively, check for dark theme background color
-  const backgroundColor = window.getComputedStyle(document.body).backgroundColor
-  const isDarkBackground =
-    backgroundColor === "rgb(15, 15, 15)" || backgroundColor === "#0f0f0f"
-
-  return isDarkTheme || hasYtDarkClass || isDarkBackground
-}
-
-// Usage
-function applyStyles() {
-  if (detectYouTubeTheme()) {
-    // Apply dark mode styles
-    console.log("Dark mode detected")
-  } else {
-    // Apply light mode styles
-    console.log("Light mode detected")
-  }
-}
-
-// Run when page loads
-document.addEventListener("DOMContentLoaded", applyStyles)
-
-// Also run when theme might change
-const observer = new MutationObserver(() => {
-  applyStyles()
-})
-
-observer.observe(document.documentElement, {
-  attributes: true,
-  attributeFilter: ["dark"],
-})
-
-applyStyles()

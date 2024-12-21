@@ -12,187 +12,209 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   colorAnimation: () => (/* binding */ colorAnimation)
 /* harmony export */ });
-/* harmony import */ var _components_utils_detectYoutubeTheme__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../components/utils/detectYoutubeTheme */ "./src/components/utils/detectYoutubeTheme.js");
+/* harmony import */ var _components_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../components/utils/convertToRGB */ "./src/components/utils/convertToRGB.js");
 
 
-function colorAnimation(scheme = "dark") {
+function colorAnimation(scheme = "dark", theme) {
   let primaryColor, secondaryColor, tertiaryColor, quaternaryColor
   // primary is for the background, secondary is for the icons & text, tertiary is for input, quaternary is for the input's placeholder
 
-
   switch (scheme) {
-    // case "emeraldviolet":
-    //   primaryColor = "#3f384c"
-    //   secondaryColor = "#d4bbff"
-    //   tertiaryColor = "#292335"
-    //   quaternaryColor = "#cdc2db"
-    //   break
-    // case "ladypink":
-    //   primaryColor = "#493545"
-    //   secondaryColor = "#f6b0ea"
-    //   tertiaryColor = "#32202f"
-    //   quaternaryColor = "#dabfd2"
-    //   break
-    // case "darkbrown":
-    //   primaryColor = "#46383a"
-    //   secondaryColor = "#ddbfc3"
-    //   tertiaryColor = "#2f2325"
-    //   quaternaryColor = "#d6c2c4"
-    //   break
-    // case "pinkbrown":
-    //   primaryColor = "#4f3439"
-    //   secondaryColor = "#ffb1c0"
-    //   tertiaryColor = "#371f24"
-    //   quaternaryColor = "#e4bdc3"
-    //   break
-    // case "skinbrown":
-    //   primaryColor = "#463931"
-    //   secondaryColor = "#dec1b1"
-    //   tertiaryColor = "#2f231c"
-    //   quaternaryColor = "#d7c2b8"
-    //   break
-    // case "beautifulorange":
-    //   primaryColor = "#4f3625"
-    //   secondaryColor = "#ffb787"
-    //   tertiaryColor = "#362112"
-    //   quaternaryColor = "#e5bfa8"
-    //   break
-    // case "yellowochre":
-    //   primaryColor = "#423b20"
-    //   secondaryColor = "#dec663"
-    //   tertiaryColor = "#2c250c"
-    //   quaternaryColor = "#d2c6a1"
-    //   break
-    // case "guttergreen":
-    //   primaryColor = "#373d35"
-    //   secondaryColor = "#becab8"
-    //   tertiaryColor = "#212720"
-    //   quaternaryColor = "#c2c9bd"
-    //   break
-    // case "olivegreen":
-    //   primaryColor = "#313f2c"
-    //   secondaryColor = "#a0d490"
-    //   tertiaryColor = "#1c2918"
-    //   quaternaryColor = "#bbcbb2"
-    //   break
-    // case "brightgreen":
-    //   primaryColor = "#27403c"
-    //   secondaryColor = "#74d7cb"
-    //   tertiaryColor = "#102a27"
-    //   quaternaryColor = "#b1ccc7"
-    //   break
-    // case "dirtygreen":
-    //   primaryColor = "#343d3f"
-    //   secondaryColor = "#b8cacd"
-    //   tertiaryColor = "#1e2729"
-    //   quaternaryColor = "#bfc8ca"
-    //   break
-    // case "blackngrey":
-    //   primaryColor = " #383b43"
-    //   secondaryColor = " #bac7e3"
-    //   tertiaryColor = "#23262d"
-    //   quaternaryColor = "#c4c6d0"
-    //   break
-    // case "blacknwhite":
-    //   primaryColor = "#3c3c3c"
-    //   secondaryColor = "#a8c7fa"
-    //   tertiaryColor = "#282828"
-    //   quaternaryColor = "#c7c7c7"
-    //   break
-    // case "gloriousblue":
-    // default:
-    //   primaryColor = " #2b437c"
-    //   secondaryColor = " #b0c4fc"
-    //   tertiaryColor = " #1f2535"
-    //   quaternaryColor = " #707689"
-    //   break
-    
-    
-    
     case "emeraldviolet":
-      primaryColor = "#f7edff"
-      secondaryColor = "#6a5294"
-      tertiaryColor = "#ede7f2"
-      quaternaryColor = "#4b4358"
+      if (theme === "dark") {
+        primaryColor = "#3f384c"
+        secondaryColor = "#d4bbff"
+        tertiaryColor = "#292335"
+        quaternaryColor = "#cdc2db"
+      } else {
+        primaryColor = "#f7edff"
+        secondaryColor = "#6a5294"
+        tertiaryColor = "#ede7f2"
+        quaternaryColor = "#4b4358"
+      }
       break
+
     case "ladypink":
-      primaryColor = "#ffebf8"
-      secondaryColor = "#834a7d"
-      tertiaryColor = "#f0e6f0"
-      quaternaryColor = "#554151"
+      if (theme === "dark") {
+        primaryColor = " #493545"
+        secondaryColor = " #f6b0ea"
+        tertiaryColor = " #32202f"
+        quaternaryColor = " #dabfd2"
+      } else {
+        primaryColor = "#ffebf8"
+        secondaryColor = "#834a7d"
+        tertiaryColor = "#f0e6f0"
+        quaternaryColor = "#554151"
+      }
       break
+
     case "darkbrown":
-      primaryColor = "#ffecee"
-      secondaryColor = "#70585c"
-      tertiaryColor = "#eee8ec"
-      quaternaryColor = "#524345"
+      if (theme === "dark") {
+        primaryColor = "#46383a"
+        secondaryColor = "#ddbfc3"
+        tertiaryColor = "#2f2325"
+        quaternaryColor = "#d6c2c4"
+      } else {
+        primaryColor = "#ffecee"
+        secondaryColor = "#70585c"
+        tertiaryColor = "#eee8ec"
+        quaternaryColor = "#524345"
+      }
       break
+
     case "pinkbrown":
-      primaryColor = "#ffecee"
-      secondaryColor = "#924759"
-      tertiaryColor = "#f2e6eb"
-      quaternaryColor = "#5b3f44"
+      if (theme === "dark") {
+        primaryColor = "#4f3439"
+        secondaryColor = "#ffb1c0"
+        tertiaryColor = "#371f24"
+        quaternaryColor = "#e4bdc3"
+      } else {
+        primaryColor = "#ffecee"
+        secondaryColor = "#924759"
+        tertiaryColor = "#f2e6eb"
+        quaternaryColor = "#5b3f44"
+      }
       break
+
     case "skinbrown":
-      primaryColor = "#ffede5"
-      secondaryColor = "#705a4d"
-      tertiaryColor = "#eee8ea"
-      quaternaryColor = "#52443c"
+      if (theme === "dark") {
+        primaryColor = "#463931"
+        secondaryColor = "#dec1b1"
+        tertiaryColor = "#2f231c"
+        quaternaryColor = "#d7c2b8"
+      } else {
+        primaryColor = "#ffede5"
+        secondaryColor = "#705a4d"
+        tertiaryColor = "#eee8ea"
+        quaternaryColor = "#52443c"
+      }
       break
+
     case "beautifulorange":
-      primaryColor = "#ffede4"
-      secondaryColor = "#8e4e1c"
-      tertiaryColor = "#f2e7e4"
-      quaternaryColor = "#5b4130"
+      if (theme === "dark") {
+        primaryColor = "#4f3625"
+        secondaryColor = "#ffb787"
+        tertiaryColor = "#362112"
+        quaternaryColor = "#e5bfa8"
+      } else {
+        primaryColor = "#ffede4"
+        secondaryColor = "#8e4e1c"
+        tertiaryColor = "#f2e7e4"
+        quaternaryColor = "#5b4130"
+      }
       break
+
     case "yellowochre":
-      primaryColor = "#fff0c1"
-      secondaryColor = "#6f5d00"
-      tertiaryColor = "#eee8e1"
-      quaternaryColor = "#4e472a"
+      if (theme === "dark") {
+        primaryColor = "#423b20"
+        secondaryColor = "#dec663"
+        tertiaryColor = "#2c250c"
+        quaternaryColor = "#d2c6a1"
+      } else {
+        primaryColor = "#fff0c1"
+        secondaryColor = "#6f5d00"
+        tertiaryColor = "#eee8e1"
+        quaternaryColor = "#4e472a"
+      }
       break
+
     case "guttergreen":
-      primaryColor = "#e8f4e1"
-      secondaryColor = "#566253"
-      tertiaryColor = "#eaeae5"
-      quaternaryColor = "#424940"
+      if (theme === "dark") {
+        primaryColor = "#373d35"
+        secondaryColor = "#becab8"
+        tertiaryColor = "#212720"
+        quaternaryColor = "#c2c9bd"
+      } else {
+        primaryColor = "#e8f4e1"
+        secondaryColor = "#566253"
+        tertiaryColor = "#eaeae5"
+        quaternaryColor = "#424940"
+      }
       break
+
     case "olivegreen":
-      primaryColor = "#cbffb8"
-      secondaryColor = "#3b6930"
-      tertiaryColor = "#e4ecdc"
-      quaternaryColor = "#3c4b37"
+      if (theme === "dark") {
+        primaryColor = "#313f2c"
+        secondaryColor = "#a0d490"
+        tertiaryColor = "#1c2918"
+        quaternaryColor = "#bbcbb2"
+      } else {
+        primaryColor = "#cbffb8"
+        secondaryColor = "#3b6930"
+        tertiaryColor = "#e4ecdc"
+        quaternaryColor = "#3c4b37"
+      }
       break
+
     case "brightgreen":
-      primaryColor = "#b3fff4"
-      secondaryColor = "#006a62"
-      tertiaryColor = "#daede9"
-      quaternaryColor = "#324b48"
+      if (theme === "dark") {
+        primaryColor = "#27403c"
+        secondaryColor = "#74d7cb"
+        tertiaryColor = "#102a27"
+        quaternaryColor = "#b1ccc7"
+      } else {
+        primaryColor = "#b3fff4"
+        secondaryColor = "#006a62"
+        tertiaryColor = "#daede9"
+        quaternaryColor = "#324b48"
+      }
       break
+
     case "dirtygreen":
-      primaryColor = "#e2f4f7"
-      secondaryColor = "#516164"
-      tertiaryColor = "#e9eaea"
-      quaternaryColor = "#3f484a"
+      if (theme === "dark") {
+        primaryColor = "#343d3f"
+        secondaryColor = "#b8cacd"
+        tertiaryColor = "#1e2729"
+        quaternaryColor = "#bfc8ca"
+      } else {
+        primaryColor = "#e2f4f7"
+        secondaryColor = "#516164"
+        tertiaryColor = "#e9eaea"
+        quaternaryColor = "#3f484a"
+      }
       break
+
     case "blackngrey":
-      primaryColor = " #ecf0ff"
-      secondaryColor = " #525f77"
-      tertiaryColor = "#eae9ed"
-      quaternaryColor = "#44474e"
+      if (theme === "dark") {
+        primaryColor = "#383b43"
+        secondaryColor = "#bac7e3"
+        tertiaryColor = "#23262d"
+        quaternaryColor = "#c4c6d0"
+      } else {
+        primaryColor = "#ecf0ff"
+        secondaryColor = "#525f77"
+        tertiaryColor = "#eae9ed"
+        quaternaryColor = "#44474e"
+      }
       break
+
     case "blacknwhite":
-      primaryColor = " #f2f2f2"
-      secondaryColor = " #3c3c3c"
-      tertiaryColor = "#efeded"
-      quaternaryColor = "#474747"
+      if (theme === "dark") {
+        primaryColor = "#3c3c3c"
+        secondaryColor = "#a8c7fa"
+        tertiaryColor = "#282828"
+        quaternaryColor = "#c7c7c7"
+      } else {
+        primaryColor = "#f2f2f2"
+        secondaryColor = "#3c3c3c"
+        tertiaryColor = "#efeded"
+        quaternaryColor = "#474747"
+      }
       break
+
     case "gloriousblue":
     default:
-      primaryColor = " #ecf0ff"
-      secondaryColor = " #3a5e98"
-      tertiaryColor = " #e6e9f3"
-      quaternaryColor = " #3e4759"
+      if (theme === "dark") {
+        primaryColor = "#2b437c"
+        secondaryColor = "#b0c4fc"
+        tertiaryColor = "#1f2535"
+        quaternaryColor = "#707689"
+      } else {
+        primaryColor = "#ecf0ff"
+        secondaryColor = "#3a5e98"
+        tertiaryColor = "#e6e9f3"
+        quaternaryColor = "#3e4759"
+      }
       break
   }
 
@@ -254,20 +276,20 @@ function colorAnimation(scheme = "dark") {
     }*/
 
     /* input field */
-    yt-searchbox .ytSearchboxComponentInputBoxDark{
+    yt-searchbox .ytSearchboxComponentInputBoxDark, .ytSearchboxComponentInputBox{
         background-color: ${tertiaryColor} !important;
     }
-    yt-searchbox .ytSearchboxComponentInputBoxDark input::placeholder{
+    yt-searchbox .ytSearchboxComponentInputBoxDark input::placeholder, #center > yt-searchbox > div.ytSearchboxComponentInputBox > form > input::placeholder, ytSearchboxComponentInput {
         color: ${quaternaryColor} !important;
     }
     /* additional buttons: notification bell + sidebar buttons + Create button + Search & audio buttons */
     #masthead-container yt-icon-button svg, #guide-content yt-icon svg, #masthead-container #end #buttons button, #container #center button{
         color: ${secondaryColor} !important;
     }
-    /* removing main youtube icon's color that was assigned above */
+    /* removing main youtube icon's color that was assigned above
     #guide-content #header ytd-topbar-logo-renderer ytd-logo #logo-icon svg{
       color: white !important;
-    }
+    }*/
 
     /* comment section: replies style */
     #replies #expander .expander-header yt-button-shape button .yt-spec-button-shape-next__button-text-content, #replies #expander .expander-header yt-button-shape button .yt-spec-button-shape-next__icon{
@@ -301,8 +323,28 @@ function colorAnimation(scheme = "dark") {
     }
     /* account details */
     ytd-compact-link-renderer #endpoint > tp-yt-paper-item{
-      background-color: #282828;
+      background-color: ${theme === "dark" ? "#282828" : "#ffffff"} ;
     }
+      /* creator comments */
+      #author-comment-badge > ytd-author-comment-badge-renderer{
+        background: ${(0,_components_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_0__.convertToRGBA)(secondaryColor, 0.8)} !important;
+      }
+        /* show transcript button */
+        .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--outline{
+          color: ${secondaryColor} !important;
+          border-color: ${(0,_components_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_0__.convertToRGBA)(secondaryColor, 0.2)} !important;
+        }
+          /*remove suggestion in input field */
+          .ytSuggestionComponentRemoveLink{
+            color: ${secondaryColor} !important;
+          }
+            /* focusing border in input field */
+            .ytSearchboxComponentInputBoxDark.ytSearchboxComponentInputBoxHasFocus{
+              border-color: ${(0,_components_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_0__.convertToRGBA)(secondaryColor, 0.3)} !important;
+            }
+              .ytSearchboxComponentInputBoxHasFocus{
+                border-color: ${(0,_components_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_0__.convertToRGBA)(secondaryColor, 0.5)} !important;
+              }
   `
 
   // Remove any existing custom background style
@@ -790,6 +832,49 @@ function applyPremiumBlockStyle(renderer) {
 
 /***/ }),
 
+/***/ "./src/components/utils/convertToRGB.js":
+/*!**********************************************!*\
+  !*** ./src/components/utils/convertToRGB.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   convertToRGBA: () => (/* binding */ convertToRGBA)
+/* harmony export */ });
+function convertToRGBA(hex, alpha) {
+  // Remove any spaces and ensure hex starts with #
+  hex = hex.trim()
+  if (!hex.startsWith("#")) {
+    hex = "#" + hex
+  }
+
+  // Validate hex format
+  const match = hex.match(/^#([a-f0-9]{6}|[a-f0-9]{3})$/i)
+  if (!match) {
+    console.error("Invalid hex color:", hex)
+    // Return a fallback color instead of throwing error
+    return "rgba(0, 0, 0, " + alpha + ")"
+  }
+
+  let color = match[1]
+  if (color.length === 3) {
+    // Convert shorthand hex to full length
+    color = color[0] + color[0] + color[1] + color[1] + color[2] + color[2]
+  }
+
+  const r = parseInt(color.slice(0, 2), 16)
+  const g = parseInt(color.slice(2, 4), 16)
+  const b = parseInt(color.slice(4, 6), 16)
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
+
+
+
+/***/ }),
+
 /***/ "./src/components/utils/debounce.js":
 /*!******************************************!*\
   !*** ./src/components/utils/debounce.js ***!
@@ -809,37 +894,6 @@ function debounce(func, delay) {
     timeoutId = setTimeout(() => func.apply(context, args), delay)
   }
 }
-
-
-/***/ }),
-
-/***/ "./src/components/utils/detectYoutubeTheme.js":
-/*!****************************************************!*\
-  !*** ./src/components/utils/detectYoutubeTheme.js ***!
-  \****************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   detectYouTubeTheme: () => (/* binding */ detectYouTubeTheme)
-/* harmony export */ });
-function detectYouTubeTheme() {
-  // Check if the html element has the dark theme attribute
-  const isDarkTheme = document.documentElement.hasAttribute("dark")
-
-  // Check for specific YouTube dark theme classes
-  const hasYtDarkClass =
-    document.documentElement.getAttribute("dark") === "true"
-
-  // Check for dark theme background color
-  const backgroundColor = window.getComputedStyle(document.body).backgroundColor
-  const isDarkBackground =
-    backgroundColor === "rgb(15, 15, 15)" || backgroundColor === "#0f0f0f"
-
-  // Return "dark" if any dark theme condition is met, otherwise "light"
-  return isDarkTheme || hasYtDarkClass || isDarkBackground ? "dark" : "light"
-}
-
 
 
 /***/ }),
@@ -1073,15 +1127,33 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+function detectYouTubeTheme() {
+  const isDarkTheme = document.documentElement.hasAttribute("dark")
+
+  const hasYtDarkClass =
+    document.documentElement.getAttribute("dark") === "true"
+
+  const backgroundColor = window.getComputedStyle(document.body).backgroundColor
+  const isDarkBackground =
+    backgroundColor === "rgb(15, 15, 15)" || backgroundColor === "#0f0f0f"
+
+  return isDarkTheme || hasYtDarkClass || isDarkBackground ? "dark" : "light"
+}
+
 
 async function init() {
   if (!(0,_components_filtering_shouldApplyFiltering_js__WEBPACK_IMPORTED_MODULE_3__.shouldApplyFiltering)(window.location.pathname)) return
 
   let blockedKeywords = []
   let colorScheme = "gloriousblue"
+  const detectedTheme = detectYouTubeTheme() // Detect the theme
+
   if (typeof chrome !== "undefined" && chrome.storage) {
     try {
-      const storageData = await (0,_components_storage_getFromStorage_js__WEBPACK_IMPORTED_MODULE_0__.getFromStorage)(["blockedKeywords", "colorScheme"])
+      const storageData = await (0,_components_storage_getFromStorage_js__WEBPACK_IMPORTED_MODULE_0__.getFromStorage)([
+        "blockedKeywords",
+        "colorScheme",
+      ])
       blockedKeywords = storageData.blockedKeywords || []
       colorScheme = storageData.colorScheme || "light"
     } catch (err) {
@@ -1090,9 +1162,8 @@ async function init() {
   }
   (0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_2__.filterContent)(blockedKeywords)
 
-  
   // applyColorChanger(colorScheme)
-  ;(0,_colorTheme_colorChanger_colorAnimation_js__WEBPACK_IMPORTED_MODULE_5__.colorAnimation)(colorScheme)
+  ;(0,_colorTheme_colorChanger_colorAnimation_js__WEBPACK_IMPORTED_MODULE_5__.colorAnimation)(colorScheme, detectedTheme)
   ;(0,_observePageChanges_js__WEBPACK_IMPORTED_MODULE_1__.observePageChanges)()
 }
 
@@ -1110,53 +1181,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'changeColorScheme') {
     // Immediately apply color changes
     // applyColorChanger(message.colorScheme);
-    (0,_colorTheme_colorChanger_colorAnimation_js__WEBPACK_IMPORTED_MODULE_5__.colorAnimation)(message.colorScheme)
+    const detectedTheme = detectYouTubeTheme() 
+    ;(0,_colorTheme_colorChanger_colorAnimation_js__WEBPACK_IMPORTED_MODULE_5__.colorAnimation)(message.colorScheme, detectedTheme)
   }
 });
-
-
-function detectYouTubeTheme() {
-  // Check if html element has the dark theme attribute
-  const isDarkTheme = document.documentElement.hasAttribute("dark")
-
-  // You can also check specific YouTube dark theme classes
-  const hasYtDarkClass =
-    document.documentElement.getAttribute("dark") === "true"
-
-  // Alternatively, check for dark theme background color
-  const backgroundColor = window.getComputedStyle(document.body).backgroundColor
-  const isDarkBackground =
-    backgroundColor === "rgb(15, 15, 15)" || backgroundColor === "#0f0f0f"
-
-  return isDarkTheme || hasYtDarkClass || isDarkBackground
-}
-
-// Usage
-function applyStyles() {
-  if (detectYouTubeTheme()) {
-    // Apply dark mode styles
-    console.log("Dark mode detected")
-  } else {
-    // Apply light mode styles
-    console.log("Light mode detected")
-  }
-}
-
-// Run when page loads
-document.addEventListener("DOMContentLoaded", applyStyles)
-
-// Also run when theme might change
-const observer = new MutationObserver(() => {
-  applyStyles()
-})
-
-observer.observe(document.documentElement, {
-  attributes: true,
-  attributeFilter: ["dark"],
-})
-
-applyStyles()
-
 })();
 
 /******/ })()

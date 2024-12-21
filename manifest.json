@@ -15,11 +15,15 @@
   "action": {
     "default_popup": "dist/popup.html",
     "default_icon": {
-      "16": "dist/icons/icon1.png",
-      "32": "dist/icons/icon2.png",
-      "48": "dist/icons/icon3.png",
-      "128": "dist/icons/icon4.png"
+      "19": "dist/icons/icon5.png",
+      "38": "dist/icons/icon6.png"
     }
+  },
+  "icons": {
+    "16": "dist/icons/icon1.png",
+    "32": "dist/icons/icon2.png",
+    "48": "dist/icons/icon3.png",
+    "128": "dist/icons/icon4.png"
   },
   "content_scripts": [
     {
