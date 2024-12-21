@@ -703,8 +703,10 @@ function getFromStorage(keys) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   applyBlockedContent: () => (/* binding */ applyBlockedContent),
 /* harmony export */   applyCrossedOutStyle: () => (/* binding */ applyCrossedOutStyle),
 /* harmony export */   applyDisplayNoneStyle: () => (/* binding */ applyDisplayNoneStyle),
+/* harmony export */   applyPlayfulBlockStyle: () => (/* binding */ applyPlayfulBlockStyle),
 /* harmony export */   applyPremiumBlockStyle: () => (/* binding */ applyPremiumBlockStyle)
 /* harmony export */ });
 function applyDisplayNoneStyle(renderer) {
@@ -787,57 +789,240 @@ function applyCrossedOutStyle(renderer) {
 }
 
 
-function applyPremiumBlockStyle(renderer) {
-  const blockOverlay = document.createElement("div")
-
-  // Basic styling for the overlay
-  blockOverlay.style.position = "absolute"
-  blockOverlay.style.top = "0"
-  blockOverlay.style.left = "0"
-  blockOverlay.style.width = "100%"
-  blockOverlay.style.height = "100%"
-  blockOverlay.style.zIndex = "10"
-  blockOverlay.style.display = "flex"
-  blockOverlay.style.alignItems = "center"
-  blockOverlay.style.justifyContent = "center"
-  blockOverlay.style.pointerEvents = "none"
-  blockOverlay.style.background = `
-    white
+function applyBlockedContent(element) {
+  // Create overlay container
+  const overlay = document.createElement("div")
+  overlay.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(45,45,45,0.9) 100%);
+    backdrop-filter: blur(5px);
+    z-index: 10;
   `
 
-  // Create SVG element
-  const svgElement = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "svg"
-  )
-  svgElement.setAttribute("width", "200")
-  svgElement.setAttribute("height", "140")
-  svgElement.setAttribute("viewBox", "0 0 1133 812")
-  svgElement.style.opacity = "0.7"
+  // Create lock icon
+  const lockIcon = document.createElement("div")
+  lockIcon.innerHTML = `
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+  `
 
-  // Create path element
-  const pathElement = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "path"
-  )
-  pathElement.setAttribute(
-    "d",
-    "M1093.91 477.214C1092.58 475.888 1091.15 474.661 1089.73 473.433C1088.3 472.206 1086.92 470.88 1085.5 469.653C1084.07 468.426 1082.75 467.1 1081.32 465.823L1077.09 462.043C1075.77 460.717 1074.34 459.49 1072.92 458.263C1071.49 457.035 1070.11 455.71 1068.69 454.482C1067.26 453.255 1065.93 451.929 1064.51 450.653C1063.08 449.376 1061.71 448.1 1060.28 446.872C1058.86 445.645 1057.53 444.319 1056.1 443.092C1054.68 441.865 1053.3 440.539 1051.88 439.263C1050.45 437.986 1049.12 436.759 1047.7 435.482C1046.27 434.206 1044.9 432.929 1043.47 431.702C1042.04 430.474 1040.72 429.149 1039.29 427.921C1037.87 426.694 1036.49 425.368 1035.06 424.092C1033.64 422.815 1032.31 421.539 1030.89 420.311C1029.46 419.084 1028.08 417.758 1026.66 416.531C1025.23 415.304 1023.91 413.978 1022.48 412.701C1021.05 411.425 1019.68 410.198 1018.25 408.921C1016.83 407.645 1015.5 406.368 1014.07 405.141C1012.65 403.913 1011.27 402.588 1009.85 401.311C1003.6 395.132 996.536 389.831 988.857 385.551C973.866 377.465 956.969 373.564 939.946 374.259L938.668 373.13C937.242 371.903 936.013 370.479 934.44 369.349C932.867 368.22 931.786 366.698 930.262 365.52C928.738 364.342 927.607 362.869 926.034 361.74C924.461 360.61 923.724 359.383 922.397 358.401C948.644 366.033 976.042 368.942 1003.31 366.993C1029.71 365.029 1050.45 358.499 1066.72 347.06C1088.84 331.447 1101.13 305.918 1097.84 282.106C1095.14 265.274 1086.18 250.076 1072.77 239.54C1071.44 238.263 1070.06 236.987 1068.59 235.759C1067.11 234.532 1065.84 233.157 1064.36 231.979C1062.89 230.8 1061.66 229.377 1060.18 228.149C1058.71 226.922 1057.48 225.596 1056.01 224.369C1054.53 223.142 1053.25 221.816 1051.78 220.588C1050.3 219.361 1049.02 217.987 1047.55 216.808C1046.08 215.63 1044.85 214.206 1043.37 212.979C1041.9 211.751 1040.67 210.426 1039.19 209.198C1037.72 207.971 1036.44 206.596 1034.97 205.418C1033.49 204.24 1032.26 202.816 1030.74 201.588C1029.21 200.361 1028.03 199.035 1026.56 197.808C1025.09 196.581 1023.86 195.206 1022.38 194.028C1020.91 192.849 1019.63 191.425 1018.15 190.247C1016.68 189.069 1015.45 187.645 1013.98 186.418C1012.5 185.19 1011.22 183.865 1009.75 182.637C1008.27 181.41 1007.04 180.035 1005.57 178.857C1004.1 177.678 1002.82 176.255 1001.34 175.027C999.868 173.8 998.639 172.474 997.164 171.247C995.69 170.02 994.412 168.645 992.937 167.466C991.462 166.288 990.233 164.865 988.759 163.637C983.367 158.534 977.317 154.175 970.767 150.676C952.867 141.915 933.135 137.54 913.205 137.911C877.364 137.504 841.849 144.752 809.041 159.169L806.878 157.353C783.94 137.041 758.56 119.658 731.324 105.606C702.1 90.6979 669.399 83.9149 636.648 85.9671C622.92 87.1917 609.46 90.503 596.733 95.7863C595.553 94.6571 594.324 93.626 593.095 92.5949C591.866 91.5639 590.343 90.0421 588.917 88.8147C587.492 87.5873 586.115 86.2125 584.689 84.9851C583.264 83.7577 581.937 82.4323 580.511 81.2049C579.086 79.9775 577.709 78.6518 576.284 77.4244C574.858 76.197 573.531 74.8713 572.105 73.5948C570.68 72.3183 569.303 71.0418 567.878 69.8144C566.452 68.587 565.125 67.2615 563.7 66.0341C562.274 64.8067 560.898 63.4811 559.472 62.2537C558.047 61.0263 556.719 59.6517 555.294 58.4243C553.868 57.1968 552.492 55.8712 551.066 54.6438C549.641 53.4164 548.314 52.0908 546.888 50.8634C545.462 49.636 544.086 48.3104 542.66 47.0339C541.235 45.7574 539.908 44.4808 538.482 43.2534C537.057 42.026 535.68 40.7005 534.255 39.4731C532.829 38.2457 531.502 36.9201 530.076 35.6436C528.651 34.3671 527.274 33.0907 525.849 31.8633C524.423 30.6359 523.096 29.3102 521.671 28.0828C520.245 26.8554 518.869 25.5298 517.443 24.3024C516.017 23.075 514.69 21.7003 513.265 20.4729C504.593 11.4751 493.55 5.10963 481.411 2.11104C451.917 -5.00789 419.67 9.37721 391.159 42.5662C331.384 112.135 307.593 201.097 289.257 286.966C246.187 314.285 199.714 335.842 151.028 351.086C147.236 352.259 143.97 354.713 141.791 358.027C139.612 361.341 138.654 365.31 139.083 369.251C139.376 371.797 140.246 374.243 141.625 376.404C143.005 378.564 144.859 380.383 147.046 381.722C148.224 383.218 149.655 384.498 151.274 385.502C152.434 386.998 153.848 388.278 155.452 389.283C156.629 390.794 158.059 392.09 159.68 393.112C160.853 394.595 162.265 395.873 163.858 396.893C165.036 398.389 166.467 399.668 168.085 400.673C169.244 402.183 170.658 403.479 172.264 404.502C173.455 405.986 174.884 407.264 176.491 408.283C177.651 409.778 179.065 411.058 180.67 412.063C181.848 413.559 183.278 414.839 184.897 415.844C186.056 417.354 187.47 418.65 189.076 419.673C190.267 421.157 191.695 422.434 193.303 423.453C194.463 424.949 195.877 426.229 197.481 427.234C198.658 428.745 200.088 430.041 201.709 431.063C202.882 432.546 204.294 433.824 205.887 434.844C207.065 436.34 208.496 437.62 210.115 438.624C211.286 440.122 212.698 441.416 214.293 442.454C215.478 443.925 216.888 445.201 218.471 446.234C219.661 447.719 221.09 448.997 222.699 450.015C223.858 451.51 225.273 452.79 226.877 453.795C228.066 455.295 229.494 456.589 231.105 457.624C232.507 459.466 234.274 461.001 236.295 462.133C238.316 463.264 240.548 463.969 242.853 464.203C244.131 464.203 245.507 464.203 246.786 464.203C245.753 467.345 244.819 470.536 243.738 473.679C180.189 486 119.916 511.434 66.7733 548.354C16.191 584.243 -7.4043 629.215 3.65599 668.639C7.82806 682.998 16.1981 695.786 27.6936 705.363C29.0208 706.689 30.4465 707.916 31.9212 709.144C33.3959 710.371 34.674 711.697 36.0995 712.973C37.5251 714.25 38.8522 715.526 40.3269 716.753C41.8016 717.981 43.0797 719.306 44.5053 720.534C45.9308 721.761 47.258 723.087 48.7327 724.364C50.2074 725.64 51.4855 726.916 52.9111 728.144C54.3366 729.371 55.6639 730.697 57.0894 731.924C58.515 733.152 59.8914 734.477 61.317 735.705C62.7425 736.932 64.0697 738.307 65.4952 739.534C66.9207 740.761 68.2972 742.087 69.7228 743.315C71.1483 744.542 72.4756 745.867 73.9011 747.095C75.3267 748.322 76.703 749.648 78.1285 750.924C79.5541 752.201 80.8814 753.477 82.3561 754.705C83.8308 755.932 85.1088 757.258 86.5343 758.485C87.9599 759.712 89.2871 761.038 90.7127 762.315L94.9402 766.095C96.2675 767.421 97.6929 768.648 99.1184 769.875C100.544 771.103 101.92 772.428 103.346 773.656C104.772 774.883 106.099 776.258 107.524 777.485C108.95 778.713 110.326 780.038 111.752 781.266C132.594 801.641 164.301 811.509 191.877 811.902H194.139C282.621 811.902 351.047 743.167 382.803 683.81C393.269 664.001 401.986 643.319 408.856 621.998C425.465 621.157 442.111 621.321 458.701 622.489C531.649 627.399 603.025 649.443 672.09 670.603L684.036 674.236C761.654 697.999 837.798 719.356 915.712 719.945C966.638 720.239 1009.85 711.255 1044.94 692.893C1088.79 670.063 1120.35 631.179 1129.4 588.907C1133.75 568.815 1132.76 547.935 1126.54 528.341C1120.31 508.748 1109.06 491.121 1093.91 477.214Z"
-  )
-  pathElement.setAttribute("fill", "#19154A")
+  // Create message text
+  const message = document.createElement("div")
+  message.style.cssText = `
+    color: white;
+    font-family: 'YouTube Sans', 'Roboto', sans-serif;
+    font-size: 16px;
+    margin-top: 16px;
+    text-align: center;
+    padding: 0 20px;
+  `
+  message.textContent = "Content Blocked"
 
-  // Append path to SVG
-  svgElement.appendChild(pathElement)
+  // Create button
+  const button = document.createElement("button")
+  button.style.cssText = `
+    background: #CC0000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-family: 'YouTube Sans', 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 12px;
+    cursor: pointer;
+  `
+  button.textContent = "Blocked Content"
 
-  // Append SVG to overlay
-  blockOverlay.appendChild(svgElement)
+  // Assemble the overlay
+  overlay.appendChild(lockIcon)
+  overlay.appendChild(message)
+  overlay.appendChild(button)
 
-  // Set renderer style
-  renderer.style.position = "relative"
-  renderer.style.overflow = "hidden"
+  // Add relative positioning to the parent element if needed
+  element.style.position = "relative"
 
-  // Append overlay to renderer
-  renderer.appendChild(blockOverlay)
+  // Add the overlay to the element
+  element.appendChild(overlay)
+}
+
+
+
+function applyPlayfulBlockStyle(element) {
+  // Create overlay container
+  const overlay = document.createElement("div")
+  overlay.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(45deg, #FF9999, #FF99CC);
+    z-index: 10;
+  `
+
+  // Create emoji icon
+  const emojiIcon = document.createElement("div")
+  emojiIcon.style.cssText = `
+    font-size: 48px;
+    margin-bottom: 16px;
+  `
+  emojiIcon.textContent = "🙈" // Playful "see no evil" monkey
+
+  // Create message text
+  const message = document.createElement("div")
+  message.style.cssText = `
+    color: #444;
+    font-family: 'YouTube Sans', 'Roboto', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    padding: 0 20px;
+    text-shadow: 1px 1px 0 white;
+  `
+  message.textContent = "Oops! Nothing to see here!"
+
+  // Create secondary message
+  const subMessage = document.createElement("div")
+  subMessage.style.cssText = `
+    color: #666;
+    font-family: 'YouTube Sans', 'Roboto', sans-serif;
+    font-size: 14px;
+    margin-top: 8px;
+    text-align: center;
+    padding: 0 20px;
+  `
+  subMessage.textContent = "This content has been blocked"
+
+  // Create button
+  const button = document.createElement("button")
+  button.style.cssText = `
+    background: white;
+    color: #FF6666;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-family: 'YouTube Sans', 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  `
+  button.textContent = "Blocked Content"
+
+  // Assemble the overlay
+  overlay.appendChild(emojiIcon)
+  overlay.appendChild(message)
+  overlay.appendChild(subMessage)
+  overlay.appendChild(button)
+
+  // Add relative positioning to the parent element if needed
+  element.style.position = "relative"
+
+  // Add the overlay to the element
+  element.appendChild(overlay)
+}
+
+function applyPremiumBlockStyle(element) {
+  // Create overlay container
+  const overlay = document.createElement("div")
+  overlay.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    z-index: 10;
+  `
+
+  // Create geometric pattern using SVG
+  const pattern = document.createElement("div")
+  pattern.innerHTML = `
+    <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer diamond -->
+      <path d="M80 0L160 80L80 160L0 80L80 0Z" fill="none" stroke="#FFD700" stroke-width="2"/>
+      
+      <!-- Inner diamond -->
+      <path d="M80 20L140 80L80 140L20 80L80 20Z" fill="none" stroke="#FFD700" stroke-width="2"/>
+      
+      <!-- Center diamond -->
+      <path d="M80 40L120 80L80 120L40 80L80 40Z" fill="#FFD700" fill-opacity="0.1" stroke="#FFD700" stroke-width="2"/>
+      
+      <!-- Cross lines -->
+      <line x1="0" y1="80" x2="160" y2="80" stroke="#FFD700" stroke-width="1" stroke-opacity="0.5"/>
+      <line x1="80" y1="0" x2="80" y2="160" stroke="#FFD700" stroke-width="1" stroke-opacity="0.5"/>
+      
+      <!-- Corner accents -->
+      <circle cx="80" cy="0" r="4" fill="#FFD700"/>
+      <circle cx="160" cy="80" r="4" fill="#FFD700"/>
+      <circle cx="80" cy="160" r="4" fill="#FFD700"/>
+      <circle cx="0" cy="80" r="4" fill="#FFD700"/>
+    </svg>
+  `
+
+  // Create message text
+  const message = document.createElement("div")
+  message.style.cssText = `
+    color: #FFD700;
+    font-family: 'YouTube Sans', 'Roboto', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 24px;
+    text-align: center;
+    padding: 0 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  `
+  message.textContent = "Content Blocked"
+
+  // Create subtle button
+  const button = document.createElement("button")
+  button.style.cssText = `
+    background: transparent;
+    color: #FFD700;
+    border: 1px solid #FFD700;
+    padding: 10px 24px;
+    border-radius: 2px;
+    font-family: 'YouTube Sans', 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  `
+  button.textContent = "Blocked"
+
+  // Assemble the overlay
+  overlay.appendChild(pattern)
+  overlay.appendChild(message)
+  overlay.appendChild(button)
+
+  // Add relative positioning to the parent element if needed
+  element.style.position = "relative"
+
+  // Add the overlay to the element
+  element.appendChild(overlay)
 }
 
 
