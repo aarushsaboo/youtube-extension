@@ -337,6 +337,11 @@ function colorAnimation(scheme = "dark", theme) {
               .ytSearchboxComponentInputBoxHasFocus{
                 border-color: ${convertToRGBA(secondaryColor, 0.5)} !important;
               }
+
+        /* subscriptions page */
+        #page-header, #tabs-inner-container, #page-header-banner {
+          background-color: ${primaryColor} !important;
+        }
   `
 
   // Remove any existing custom background style
