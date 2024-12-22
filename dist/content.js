@@ -1041,7 +1041,7 @@ function applySvgBlockStyle(renderer){
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
   svg.setAttribute("width", "100%")
   svg.setAttribute("height", "100%")
-  svg.setAttribute("viewBox", "0 0 100 100")
+  svg.setAttribute("viewBox", "0 0 255 192")
   svg.setAttribute("preserveAspectRatio", "none")
   svg.style.position = "absolute"
   svg.style.top = "0"
