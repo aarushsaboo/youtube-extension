@@ -1116,10 +1116,15 @@ function applySvgBlockStyle(renderer){
   renderer.appendChild(svg)
 }
 
-function applyGradientBlockStyle(renderer, isShort, detectedTheme, colorScheme) {
+function applyGradientBlockStyle(
+  renderer,
+  isShort,
+  detectedTheme,
+  colorScheme
+) {
   const colors = (0,_utils_chooseColors__WEBPACK_IMPORTED_MODULE_0__.chooseColors)(colorScheme, detectedTheme)
   const { primary, secondary, tertiary, quaternary } = colors
-  
+
   if (renderer.hasAttribute("data-styled")) return
   renderer.setAttribute("data-styled", "true")
 
@@ -1132,32 +1137,24 @@ function applyGradientBlockStyle(renderer, isShort, detectedTheme, colorScheme) 
   overlay.style.zIndex = "10"
 
   // Convert hex to rgba for the gradients
-  const primaryRGBA = (0,_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_1__.convertToRGBA)(primary, 0.9)
-  const secondaryRGBA = (0,_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_1__.convertToRGBA)(secondary, 0.9)
-  const tertiaryRGBA = (0,_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_1__.convertToRGBA)(tertiary, 0.04)
-  const quaternaryRGBA = (0,_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_1__.convertToRGBA)(quaternary, 0.04)
+  const primaryRGBA = (0,_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_1__.convertToRGBA)(primary, 0.05)
+  const secondaryRGBA = (0,_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_1__.convertToRGBA)(secondary, 0.05)
+  const tertiaryRGBA = (0,_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_1__.convertToRGBA)(tertiary, 0.05)
+  const quaternaryRGBA = (0,_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_1__.convertToRGBA)(quaternary, 0.05)
 
-  // Different gradient based on content type
-  overlay.style.backgroundImage = isShort
-    ? `linear-gradient(180deg, ${primaryRGBA}, ${secondaryRGBA})`
-    : `radial-gradient(circle at 53% 25%, ${tertiaryRGBA} 0%, ${tertiaryRGBA} 36%, transparent 36%, transparent 100%),
-       radial-gradient(circle at 48% 27%, ${quaternaryRGBA} 0%, ${quaternaryRGBA} 45%, transparent 45%, transparent 100%),
-       radial-gradient(circle at 65% 50%, ${tertiaryRGBA} 0%, ${tertiaryRGBA} 61%, transparent 61%, transparent 100%),
-       radial-gradient(circle at 78% 82%, ${quaternaryRGBA} 0%, ${quaternaryRGBA} 26%, transparent 26%, transparent 100%),
-       radial-gradient(circle at 99% 75%, ${tertiaryRGBA} 0%, ${tertiaryRGBA} 31%, transparent 31%, transparent 100%),
-       radial-gradient(circle at 17% 28%, ${quaternaryRGBA} 0%, ${quaternaryRGBA} 15%, transparent 15%, transparent 100%),
-       radial-gradient(circle at 19% 19%, ${tertiaryRGBA} 0%, ${tertiaryRGBA} 68%, transparent 68%, transparent 100%),
-       radial-gradient(circle at 35% 23%, ${quaternaryRGBA} 0%, ${quaternaryRGBA} 18%, transparent 18%, transparent 100%),
-       linear-gradient(90deg, ${primaryRGBA}, ${secondaryRGBA})`
-
-  console.log('Colors being used:', {
-    primary,
-    secondary,
-    tertiary,
-    quaternary,
-    theme: detectedTheme,
-    scheme: colorScheme
-  })
+  // Apply the requested gradient using the RGBA colors
+  overlay.style.backgroundImage = `
+    radial-gradient(circle at 29% 55%, ${primaryRGBA} 0%, ${primaryRGBA} 4%, transparent 4%, transparent 44%, transparent 44%, transparent 100%),
+    radial-gradient(circle at 85% 89%, ${secondaryRGBA} 0%, ${secondaryRGBA} 51%, transparent 51%, transparent 52%, transparent 52%, transparent 100%),
+    radial-gradient(circle at 6% 90%, ${tertiaryRGBA} 0%, ${tertiaryRGBA} 53%, transparent 53%, transparent 64%, transparent 64%, transparent 100%),
+    radial-gradient(circle at 35% 75%, ${quaternaryRGBA} 0%, ${quaternaryRGBA} 6%, transparent 6%, transparent 98%, transparent 98%, transparent 100%),
+    radial-gradient(circle at 56% 75%, ${primaryRGBA} 0%, ${primaryRGBA} 16%, transparent 16%, transparent 23%, transparent 23%, transparent 100%),
+    radial-gradient(circle at 42% 0%, ${secondaryRGBA} 0%, ${secondaryRGBA} 3%, transparent 3%, transparent 26%, transparent 26%, transparent 100%),
+    radial-gradient(circle at 29% 28%, ${tertiaryRGBA} 0%, ${tertiaryRGBA} 51%, transparent 51%, transparent 75%, transparent 75%, transparent 100%),
+    radial-gradient(circle at 77% 21%, ${quaternaryRGBA} 0%, ${quaternaryRGBA} 35%, transparent 35%, transparent 55%, transparent 55%, transparent 100%),
+    radial-gradient(circle at 65% 91%, ${primaryRGBA} 0%, ${primaryRGBA} 46%, transparent 46%, transparent 76%, transparent 76%, transparent 100%),
+    linear-gradient(45deg, ${secondary}, ${quaternary})
+  `
 
   const text = document.createElement("div")
   text.textContent = isShort ? "Short Blocked" : "Content Blocked"
@@ -1170,11 +1167,10 @@ function applyGradientBlockStyle(renderer, isShort, detectedTheme, colorScheme) 
   text.style.color = "#ffffff"
   text.style.fontSize = isShort ? "1rem" : "1.5rem"
   text.style.zIndex = "11"
-  
+
   // Add background to text to ensure it's visible
   text.style.padding = "5px 10px"
   text.style.backgroundColor = "rgba(0, 0, 0, 0.5)"
-  text.style.color = "#ffffff"
   text.style.borderRadius = "4px"
 
   renderer.style.position = "relative"
@@ -1183,6 +1179,7 @@ function applyGradientBlockStyle(renderer, isShort, detectedTheme, colorScheme) 
   renderer.appendChild(overlay)
   renderer.appendChild(text)
 }
+
 
 
 
