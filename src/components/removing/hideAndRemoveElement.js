@@ -1,4 +1,4 @@
-import { applyDisplayNoneStyle, applyCrossedOutStyle, applyPremiumBlockStyle, applySvgBlockStyle } from "../styles/applyStyles"
+import { applyDisplayNoneStyle, applyCrossedOutStyle, applyPremiumBlockStyle, applySvgBlockStyle, applyGradientBlockStyle } from "../styles/applyStyles"
 function hideAndRemoveElement(element) {
 
   chrome.storage.sync.get(
@@ -36,6 +36,10 @@ function hideAndRemoveElement(element) {
       
       case "svgBlock":
         applySvgBlockStyle(renderer)
+        break
+      
+      case "applyGradient":
+        applyGradientBlockStyle(renderer)
         break
 
       default:

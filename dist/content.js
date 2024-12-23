@@ -668,6 +668,10 @@ function hideAndRemoveElement(element) {
       case "svgBlock":
         ;(0,_styles_applyStyles__WEBPACK_IMPORTED_MODULE_0__.applySvgBlockStyle)(renderer)
         break
+      
+      case "applyGradient":
+        ;(0,_styles_applyStyles__WEBPACK_IMPORTED_MODULE_0__.applyGradientBlockStyle)(renderer)
+        break
 
       default:
         console.log("Unknown animation style:", animationStyle)
@@ -710,6 +714,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   applyBlockedContent: () => (/* binding */ applyBlockedContent),
 /* harmony export */   applyCrossedOutStyle: () => (/* binding */ applyCrossedOutStyle),
 /* harmony export */   applyDisplayNoneStyle: () => (/* binding */ applyDisplayNoneStyle),
+/* harmony export */   applyGradientBlockStyle: () => (/* binding */ applyGradientBlockStyle),
 /* harmony export */   applyPlayfulBlockStyle: () => (/* binding */ applyPlayfulBlockStyle),
 /* harmony export */   applyPremiumBlockStyle: () => (/* binding */ applyPremiumBlockStyle),
 /* harmony export */   applySvgBlockStyle: () => (/* binding */ applySvgBlockStyle)
@@ -1031,13 +1036,24 @@ function applyPremiumBlockStyle(element) {
 }
 
 function applySvgBlockStyle(renderer){
+  // Create a wrapper for the original content
+  const contentWrapper = document.createElement("div")
+  contentWrapper.style.position = "relative"
+  contentWrapper.style.opacity = "0.3"
+  contentWrapper.style.filter = "grayscale(100%)"
+  contentWrapper.style.transition = "all 0.5s ease"
+
+  // Move all original content into the wrapper
+  while (renderer.firstChild) {
+    contentWrapper.appendChild(renderer.firstChild)
+  }
+  renderer.appendChild(contentWrapper)
+
+  // Add pointer-events style to the renderer itself
   renderer.style.position = "relative"
-  renderer.style.opacity = "0.3"
-  renderer.style.filter = "grayscale(100%)"
-  renderer.style.transition = "all 0.5s ease"
   renderer.style.pointerEvents = "none"
 
-  // Create the SVG overlay
+  // Create and add the SVG overlay
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
   svg.setAttribute("width", "100%")
   svg.setAttribute("height", "100%")
@@ -1049,7 +1065,6 @@ function applySvgBlockStyle(renderer){
   svg.style.width = "100%"
   svg.style.height = "100%"
   svg.style.zIndex = "10"
-  svg.style.pointerEvents = "none"
 
   svg.innerHTML = `
 <rect width="255" height="192" fill="#7C5E98"/>
@@ -1076,7 +1091,34 @@ function applySvgBlockStyle(renderer){
 <path d="M152.873 162.673C152.742 162.063 152.496 161.487 152.151 160.979C151.806 160.47 151.368 160.038 150.863 159.709C150.359 159.379 149.797 159.159 149.21 159.06C148.624 158.961 148.024 158.985 147.447 159.132L145.493 159.608C144.913 159.744 144.365 160.001 143.88 160.364C143.395 160.726 142.984 161.187 142.671 161.719C142.357 162.251 142.148 162.843 142.055 163.462C141.962 164.08 141.987 164.711 142.129 165.319V165.319C142.257 165.931 142.499 166.51 142.843 167.022C143.187 167.533 143.625 167.967 144.131 168.297C144.637 168.627 145.201 168.847 145.789 168.944C146.377 169.041 146.978 169.012 147.556 168.86L149.527 168.403C150.105 168.26 150.651 167.998 151.133 167.632C151.614 167.266 152.022 166.803 152.333 166.271C152.644 165.738 152.852 165.146 152.945 164.529C153.037 163.911 153.013 163.28 152.873 162.673Z" fill="#906CAE"/>
 <path d="M154.875 170.305C154.741 169.757 154.494 169.239 154.148 168.782C153.802 168.325 153.365 167.937 152.86 167.641C152.356 167.344 151.795 167.146 151.209 167.055C150.624 166.965 150.025 166.985 149.448 167.115L147.494 167.544C146.913 167.667 146.365 167.898 145.88 168.225C145.395 168.551 144.984 168.966 144.671 169.446C144.357 169.925 144.148 170.458 144.055 171.015C143.962 171.572 143.987 172.141 144.129 172.688C144.259 173.238 144.503 173.758 144.848 174.218C145.192 174.678 145.63 175.067 146.135 175.364C146.641 175.661 147.204 175.86 147.791 175.948C148.379 176.036 148.979 176.012 149.556 175.878L151.51 175.449C152.089 175.324 152.636 175.091 153.12 174.764C153.603 174.437 154.014 174.022 154.327 173.543C154.64 173.065 154.849 172.532 154.943 171.976C155.037 171.42 155.014 170.852 154.875 170.305V170.305Z" fill="#906CAE"/>
 `
-   renderer.appendChild(svg);
+  renderer.appendChild(svg)
+}
+
+function applyGradientBlockStyle(renderer) {
+  const overlay = document.createElement("div")
+  overlay.style.position = "absolute"
+  overlay.style.top = "0"
+  overlay.style.left = "0"
+  overlay.style.width = "100%"
+  overlay.style.height = "100%"
+  overlay.style.zIndex = "10"
+  overlay.style.backgroundImage = `radial-gradient(circle at 53% 25%, rgba(203, 203, 203,0.04) 0%, rgba(203, 203, 203,0.04) 36%,transparent 36%, transparent 100%),radial-gradient(circle at 48% 27%, rgba(22, 22, 22,0.04) 0%, rgba(22, 22, 22,0.04) 45%,transparent 45%, transparent 100%),radial-gradient(circle at 65% 50%, rgba(219, 219, 219,0.04) 0%, rgba(219, 219, 219,0.04) 61%,transparent 61%, transparent 100%),radial-gradient(circle at 78% 82%, rgba(229, 229, 229,0.04) 0%, rgba(229, 229, 229,0.04) 26%,transparent 26%, transparent 100%),radial-gradient(circle at 99% 75%, rgba(96, 96, 96,0.04) 0%, rgba(96, 96, 96,0.04) 31%,transparent 31%, transparent 100%),radial-gradient(circle at 17% 28%, rgba(188, 188, 188,0.04) 0%, rgba(188, 188, 188,0.04) 15%,transparent 15%, transparent 100%),radial-gradient(circle at 19% 19%, rgba(25, 25, 25,0.04) 0%, rgba(25, 25, 25,0.04) 68%,transparent 68%, transparent 100%),radial-gradient(circle at 35% 23%, rgba(31, 31, 31,0.04) 0%, rgba(31, 31, 31,0.04) 18%,transparent 18%, transparent 100%),linear-gradient(90deg, rgb(138, 193, 238),rgb(20, 21, 171))`
+
+  const text = document.createElement("div")
+  text.textContent = "Content Blocked"
+  text.style.position = "absolute"
+  text.style.top = "50%"
+  text.style.left = "50%"
+  text.style.transform = "translate(-50%, -50%)"
+  text.style.color = "#ffffff"
+  text.style.fontSize = "1.5rem"
+  text.style.zIndex = "11"
+
+  renderer.style.position = "relative"
+  renderer.style.pointerEvents = "none"
+
+  renderer.appendChild(overlay)
+  renderer.appendChild(text)
 }
 
 
