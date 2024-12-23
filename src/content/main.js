@@ -5,6 +5,9 @@ import { shouldApplyFiltering } from "../components/filtering/shouldApplyFilteri
 import { applyColorChanger } from "../colorTheme/colorChanger/colorChanger.js"
 import { colorAnimation } from "../colorTheme/colorChanger/colorAnimation.js"
 import { removeAds } from "../removeAds/removeAds.js"
+
+let currentColorScheme = "gloriousblue" // module level
+
 function detectYouTubeTheme() {
   const isDarkTheme = document.documentElement.hasAttribute("dark")
 
@@ -33,16 +36,18 @@ async function init() {
         "colorScheme",
       ])
       blockedKeywords = storageData.blockedKeywords || []
-      colorScheme = storageData.colorScheme || "light"
+      if (storageData.colorScheme) {
+        currentColorScheme = storageData.colorScheme
+      }
     } catch (err) {
       console.error("Chrome not defined at this point", err)
     }
   }
-  filterContent(blockedKeywords)
+  filterContent(blockedKeywords, detectedTheme, currentColorScheme)
 
   // applyColorChanger(colorScheme)
-  colorAnimation(colorScheme, detectedTheme)
-  observePageChanges()
+  colorAnimation(currentColorScheme, detectedTheme)
+  observePageChanges(currentColorScheme, detectedTheme)
 }
 
 if (document.readyState === "loading") {

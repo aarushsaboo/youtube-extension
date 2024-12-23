@@ -1,3 +1,6 @@
+import { chooseColors } from "../utils/chooseColors"
+import { convertToRGBA } from "../utils/convertToRGB"
+
 function applyDisplayNoneStyle(renderer) {
   console.log("Applying 'displayNone' style.")
   renderer.setAttribute("data-yt-filter-blocked", "true")
@@ -373,7 +376,10 @@ function applySvgBlockStyle(renderer){
   renderer.appendChild(svg)
 }
 
-function applyGradientBlockStyle(renderer, isShort) {
+function applyGradientBlockStyle(renderer, isShort, detectedTheme, colorScheme) {
+  const colors = chooseColors(colorScheme, detectedTheme)
+  const { primary, secondary, tertiary, quaternary } = colors
+
   if (renderer.hasAttribute("data-styled")) return
   renderer.setAttribute("data-styled", "true")
 
@@ -385,10 +391,22 @@ function applyGradientBlockStyle(renderer, isShort) {
   overlay.style.height = "100%"
   overlay.style.zIndex = "10"
 
-  // Different gradient based on content type
+  // Simple version to debug colors
   overlay.style.backgroundImage = isShort
-    ? `linear-gradient(180deg, rgba(138, 193, 238, 0.9), rgba(20, 21, 171, 0.9))`
-    : `radial-gradient(circle at 53% 25%, rgba(203, 203, 203,0.04) 0%, rgba(203, 203, 203,0.04) 36%,transparent 36%, transparent 100%),radial-gradient(circle at 48% 27%, rgba(22, 22, 22,0.04) 0%, rgba(22, 22, 22,0.04) 45%,transparent 45%, transparent 100%),radial-gradient(circle at 65% 50%, rgba(219, 219, 219,0.04) 0%, rgba(219, 219, 219,0.04) 61%,transparent 61%, transparent 100%),radial-gradient(circle at 78% 82%, rgba(229, 229, 229,0.04) 0%, rgba(229, 229, 229,0.04) 26%,transparent 26%, transparent 100%),radial-gradient(circle at 99% 75%, rgba(96, 96, 96,0.04) 0%, rgba(96, 96, 96,0.04) 31%,transparent 31%, transparent 100%),radial-gradient(circle at 17% 28%, rgba(188, 188, 188,0.04) 0%, rgba(188, 188, 188,0.04) 15%,transparent 15%, transparent 100%),radial-gradient(circle at 19% 19%, rgba(25, 25, 25,0.04) 0%, rgba(25, 25, 25,0.04) 68%,transparent 68%, transparent 100%),radial-gradient(circle at 35% 23%, rgba(31, 31, 31,0.04) 0%, rgba(31, 31, 31,0.04) 18%,transparent 18%, transparent 100%),linear-gradient(90deg, rgb(138, 193, 238),rgb(20, 21, 171))`
+    ? `linear-gradient(180deg, ${primary}, ${secondary})`
+    : `linear-gradient(90deg, ${primary}, ${secondary})`
+
+  // Add a border to see the actual colors without opacity
+  overlay.style.border = `2px solid ${tertiary}`
+
+  console.log("Colors being used:", {
+    primary,
+    secondary,
+    tertiary,
+    quaternary,
+    theme: detectedTheme,
+    scheme: colorScheme,
+  })
 
   const text = document.createElement("div")
   text.textContent = isShort ? "Short Blocked" : "Content Blocked"
@@ -398,9 +416,15 @@ function applyGradientBlockStyle(renderer, isShort) {
   text.style.transform = isShort
     ? "translate(-50%, -50%) rotate(-90deg)"
     : "translate(-50%, -50%)"
-  text.style.color = "#ffffff"
+  text.style.color = detectedTheme === "dark" ? "#ffffff" : "#000000"
   text.style.fontSize = isShort ? "1rem" : "1.5rem"
   text.style.zIndex = "11"
+
+  // Add background to text to ensure it's visible
+  text.style.padding = "5px 10px"
+  text.style.backgroundColor = "rgba(0, 0, 0, 0.5)"
+  text.style.color = "#ffffff"
+  text.style.borderRadius = "4px"
 
   renderer.style.position = "relative"
   renderer.style.pointerEvents = "none"

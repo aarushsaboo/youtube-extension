@@ -1,5 +1,5 @@
 import { applyDisplayNoneStyle, applyCrossedOutStyle, applyPremiumBlockStyle, applySvgBlockStyle, applyGradientBlockStyle } from "../styles/applyStyles"
-function hideAndRemoveElement(element) {
+function hideAndRemoveElement(element, detectedTheme, colorScheme) {
   if (element.hasAttribute("data-processed")) {
     return
   }
@@ -56,7 +56,7 @@ function hideAndRemoveElement(element) {
         break
 
       case "applyGradient":
-        applyGradientBlockStyle(renderer, isShort)
+        applyGradientBlockStyle(renderer, isShort, detectedTheme, colorScheme)
         break
 
       default:

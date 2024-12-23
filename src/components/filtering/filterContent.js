@@ -8,7 +8,7 @@ function isBlocked(title, blockedKeywords) {
   )
 }
 
-function filterContent(blockedKeywords) {
+function filterContent(blockedKeywords, detectedTheme, colorScheme) {
   if (!blockedKeywords || blockedKeywords.length === 0) return
 
   CONFIG.SELECTORS.videosAndShorts.forEach((selector) => {
@@ -31,7 +31,7 @@ function filterContent(blockedKeywords) {
       if (!title) return // Skip if no title is found
 
       if (isBlocked(title, blockedKeywords)) {
-        hideAndRemoveElement(element)
+        hideAndRemoveElement(element, detectedTheme, colorScheme)
       }
     })
   })

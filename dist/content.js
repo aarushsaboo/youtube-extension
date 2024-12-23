@@ -560,7 +560,7 @@ function isBlocked(title, blockedKeywords) {
   )
 }
 
-function filterContent(blockedKeywords) {
+function filterContent(blockedKeywords, detectedTheme, colorScheme) {
   if (!blockedKeywords || blockedKeywords.length === 0) return
 
   _content_config__WEBPACK_IMPORTED_MODULE_1__.CONFIG.SELECTORS.videosAndShorts.forEach((selector) => {
@@ -583,7 +583,7 @@ function filterContent(blockedKeywords) {
       if (!title) return // Skip if no title is found
 
       if (isBlocked(title, blockedKeywords)) {
-        (0,_removing_hideAndRemoveElement__WEBPACK_IMPORTED_MODULE_0__.hideAndRemoveElement)(element)
+        (0,_removing_hideAndRemoveElement__WEBPACK_IMPORTED_MODULE_0__.hideAndRemoveElement)(element, detectedTheme, colorScheme)
       }
     })
   })
@@ -630,7 +630,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _styles_applyStyles__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../styles/applyStyles */ "./src/components/styles/applyStyles.js");
 
-function hideAndRemoveElement(element) {
+function hideAndRemoveElement(element, detectedTheme, colorScheme) {
   if (element.hasAttribute("data-processed")) {
     return
   }
@@ -687,7 +687,7 @@ function hideAndRemoveElement(element) {
         break
 
       case "applyGradient":
-        ;(0,_styles_applyStyles__WEBPACK_IMPORTED_MODULE_0__.applyGradientBlockStyle)(renderer, isShort)
+        ;(0,_styles_applyStyles__WEBPACK_IMPORTED_MODULE_0__.applyGradientBlockStyle)(renderer, isShort, detectedTheme, colorScheme)
         break
 
       default:
@@ -736,6 +736,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   applyPremiumBlockStyle: () => (/* binding */ applyPremiumBlockStyle),
 /* harmony export */   applySvgBlockStyle: () => (/* binding */ applySvgBlockStyle)
 /* harmony export */ });
+/* harmony import */ var _utils_chooseColors__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/chooseColors */ "./src/components/utils/chooseColors.js");
+/* harmony import */ var _utils_convertToRGB__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/convertToRGB */ "./src/components/utils/convertToRGB.js");
+
+
+
 function applyDisplayNoneStyle(renderer) {
   console.log("Applying 'displayNone' style.")
   renderer.setAttribute("data-yt-filter-blocked", "true")
@@ -1111,7 +1116,10 @@ function applySvgBlockStyle(renderer){
   renderer.appendChild(svg)
 }
 
-function applyGradientBlockStyle(renderer, isShort) {
+function applyGradientBlockStyle(renderer, isShort, detectedTheme, colorScheme) {
+  const colors = (0,_utils_chooseColors__WEBPACK_IMPORTED_MODULE_0__.chooseColors)(colorScheme, detectedTheme)
+  const { primary, secondary, tertiary, quaternary } = colors
+
   if (renderer.hasAttribute("data-styled")) return
   renderer.setAttribute("data-styled", "true")
 
@@ -1123,10 +1131,22 @@ function applyGradientBlockStyle(renderer, isShort) {
   overlay.style.height = "100%"
   overlay.style.zIndex = "10"
 
-  // Different gradient based on content type
+  // Simple version to debug colors
   overlay.style.backgroundImage = isShort
-    ? `linear-gradient(180deg, rgba(138, 193, 238, 0.9), rgba(20, 21, 171, 0.9))`
-    : `radial-gradient(circle at 53% 25%, rgba(203, 203, 203,0.04) 0%, rgba(203, 203, 203,0.04) 36%,transparent 36%, transparent 100%),radial-gradient(circle at 48% 27%, rgba(22, 22, 22,0.04) 0%, rgba(22, 22, 22,0.04) 45%,transparent 45%, transparent 100%),radial-gradient(circle at 65% 50%, rgba(219, 219, 219,0.04) 0%, rgba(219, 219, 219,0.04) 61%,transparent 61%, transparent 100%),radial-gradient(circle at 78% 82%, rgba(229, 229, 229,0.04) 0%, rgba(229, 229, 229,0.04) 26%,transparent 26%, transparent 100%),radial-gradient(circle at 99% 75%, rgba(96, 96, 96,0.04) 0%, rgba(96, 96, 96,0.04) 31%,transparent 31%, transparent 100%),radial-gradient(circle at 17% 28%, rgba(188, 188, 188,0.04) 0%, rgba(188, 188, 188,0.04) 15%,transparent 15%, transparent 100%),radial-gradient(circle at 19% 19%, rgba(25, 25, 25,0.04) 0%, rgba(25, 25, 25,0.04) 68%,transparent 68%, transparent 100%),radial-gradient(circle at 35% 23%, rgba(31, 31, 31,0.04) 0%, rgba(31, 31, 31,0.04) 18%,transparent 18%, transparent 100%),linear-gradient(90deg, rgb(138, 193, 238),rgb(20, 21, 171))`
+    ? `linear-gradient(180deg, ${primary}, ${secondary})`
+    : `linear-gradient(90deg, ${primary}, ${secondary})`
+
+  // Add a border to see the actual colors without opacity
+  overlay.style.border = `2px solid ${tertiary}`
+
+  console.log("Colors being used:", {
+    primary,
+    secondary,
+    tertiary,
+    quaternary,
+    theme: detectedTheme,
+    scheme: colorScheme,
+  })
 
   const text = document.createElement("div")
   text.textContent = isShort ? "Short Blocked" : "Content Blocked"
@@ -1136,15 +1156,244 @@ function applyGradientBlockStyle(renderer, isShort) {
   text.style.transform = isShort
     ? "translate(-50%, -50%) rotate(-90deg)"
     : "translate(-50%, -50%)"
-  text.style.color = "#ffffff"
+  text.style.color = detectedTheme === "dark" ? "#ffffff" : "#000000"
   text.style.fontSize = isShort ? "1rem" : "1.5rem"
   text.style.zIndex = "11"
+
+  // Add background to text to ensure it's visible
+  text.style.padding = "5px 10px"
+  text.style.backgroundColor = "rgba(0, 0, 0, 0.5)"
+  text.style.color = "#ffffff"
+  text.style.borderRadius = "4px"
 
   renderer.style.position = "relative"
   renderer.style.pointerEvents = "none"
 
   renderer.appendChild(overlay)
   renderer.appendChild(text)
+}
+
+
+
+/***/ }),
+
+/***/ "./src/components/utils/chooseColors.js":
+/*!**********************************************!*\
+  !*** ./src/components/utils/chooseColors.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   chooseColors: () => (/* binding */ chooseColors)
+/* harmony export */ });
+function chooseColors(scheme = "gloriousblue", theme) {
+  const colorSchemes = {
+    emeraldviolet: {
+      dark: {
+        primary: "#3f384c",
+        secondary: "#d4bbff",
+        tertiary: "#292335",
+        quaternary: "#cdc2db",
+      },
+      light: {
+        primary: "#f7edff",
+        secondary: "#6a5294",
+        tertiary: "#ede7f2",
+        quaternary: "#4b4358",
+      },
+    },
+    ladypink: {
+      dark: {
+        primary: "#493545",
+        secondary: "#f6b0ea",
+        tertiary: "#32202f",
+        quaternary: "#dabfd2",
+      },
+      light: {
+        primary: "#ffebf8",
+        secondary: "#834a7d",
+        tertiary: "#f0e6f0",
+        quaternary: "#554151",
+      },
+    },
+    darkbrown: {
+      dark: {
+        primary: "#46383a",
+        secondary: "#ddbfc3",
+        tertiary: "#2f2325",
+        quaternary: "#d6c2c4",
+      },
+      light: {
+        primary: "#ffecee",
+        secondary: "#70585c",
+        tertiary: "#eee8ec",
+        quaternary: "#524345",
+      },
+    },
+    pinkbrown: {
+      dark: {
+        primary: "#4f3439",
+        secondary: "#ffb1c0",
+        tertiary: "#371f24",
+        quaternary: "#e4bdc3",
+      },
+      light: {
+        primary: "#ffecee",
+        secondary: "#924759",
+        tertiary: "#f2e6eb",
+        quaternary: "#5b3f44",
+      },
+    },
+    skinbrown: {
+      dark: {
+        primary: "#463931",
+        secondary: "#dec1b1",
+        tertiary: "#2f231c",
+        quaternary: "#d7c2b8",
+      },
+      light: {
+        primary: "#ffede5",
+        secondary: "#705a4d",
+        tertiary: "#eee8ea",
+        quaternary: "#52443c",
+      },
+    },
+    beautifulorange: {
+      dark: {
+        primary: "#4f3625",
+        secondary: "#ffb787",
+        tertiary: "#362112",
+        quaternary: "#e5bfa8",
+      },
+      light: {
+        primary: "#ffede4",
+        secondary: "#8e4e1c",
+        tertiary: "#f2e7e4",
+        quaternary: "#5b4130",
+      },
+    },
+    yellowochre: {
+      dark: {
+        primary: "#423b20",
+        secondary: "#dec663",
+        tertiary: "#2c250c",
+        quaternary: "#d2c6a1",
+      },
+      light: {
+        primary: "#fff0c1",
+        secondary: "#6f5d00",
+        tertiary: "#eee8e1",
+        quaternary: "#4e472a",
+      },
+    },
+    guttergreen: {
+      dark: {
+        primary: "#373d35",
+        secondary: "#becab8",
+        tertiary: "#212720",
+        quaternary: "#c2c9bd",
+      },
+      light: {
+        primary: "#e8f4e1",
+        secondary: "#566253",
+        tertiary: "#eaeae5",
+        quaternary: "#424940",
+      },
+    },
+    olivegreen: {
+      dark: {
+        primary: "#313f2c",
+        secondary: "#a0d490",
+        tertiary: "#1c2918",
+        quaternary: "#bbcbb2",
+      },
+      light: {
+        primary: "#cbffb8",
+        secondary: "#3b6930",
+        tertiary: "#e4ecdc",
+        quaternary: "#3c4b37",
+      },
+    },
+    brightgreen: {
+      dark: {
+        primary: "#27403c",
+        secondary: "#74d7cb",
+        tertiary: "#102a27",
+        quaternary: "#b1ccc7",
+      },
+      light: {
+        primary: "#b3fff4",
+        secondary: "#006a62",
+        tertiary: "#daede9",
+        quaternary: "#324b48",
+      },
+    },
+    dirtygreen: {
+      dark: {
+        primary: "#343d3f",
+        secondary: "#b8cacd",
+        tertiary: "#1e2729",
+        quaternary: "#bfc8ca",
+      },
+      light: {
+        primary: "#e2f4f7",
+        secondary: "#516164",
+        tertiary: "#e9eaea",
+        quaternary: "#3f484a",
+      },
+    },
+    blackngrey: {
+      dark: {
+        primary: "#383b43",
+        secondary: "#bac7e3",
+        tertiary: "#23262d",
+        quaternary: "#c4c6d0",
+      },
+      light: {
+        primary: "#ecf0ff",
+        secondary: "#525f77",
+        tertiary: "#eae9ed",
+        quaternary: "#44474e",
+      },
+    },
+    blacknwhite: {
+      dark: {
+        primary: "#3c3c3c",
+        secondary: "#a8c7fa",
+        tertiary: "#282828",
+        quaternary: "#c7c7c7",
+      },
+      light: {
+        primary: "#f2f2f2",
+        secondary: "#3c3c3c",
+        tertiary: "#efeded",
+        quaternary: "#474747",
+      },
+    },
+    gloriousblue: {
+      dark: {
+        primary: "#2b437c",
+        secondary: "#b0c4fc",
+        tertiary: "#1f2535",
+        quaternary: "#707689",
+      },
+      light: {
+        primary: "#ecf0ff",
+        secondary: "#3a5e98",
+        tertiary: "#e6e9f3",
+        quaternary: "#3e4759",
+      },
+    },
+  }
+
+  // Get the color scheme or default to gloriousblue if not found
+  const selectedScheme = colorSchemes[scheme] || colorSchemes.gloriousblue
+
+  // Get the theme colors or default to dark if not found
+  const themeColors = selectedScheme[theme] || selectedScheme.dark
+
+  return themeColors
 }
 
 
@@ -1268,7 +1517,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function observePageChanges() {
+function observePageChanges(currentColorScheme, detectedTheme) {
 
   if (typeof chrome === "undefined" || !chrome.runtime || !chrome.storage) {
     console.error("Chrome extension APIs not available")
@@ -1291,7 +1540,7 @@ function observePageChanges() {
 
           // Wrap filterContent in a try-catch
           try {
-            ;(0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_1__.filterContent)(blockedKeywords)
+            ;(0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_1__.filterContent)(blockedKeywords, detectedTheme, currentColorScheme)
           } catch (filterError) {
             console.error("Content filtering error:", filterError)
           }
@@ -1446,6 +1695,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+let currentColorScheme = "gloriousblue" // module level
+
 function detectYouTubeTheme() {
   const isDarkTheme = document.documentElement.hasAttribute("dark")
 
@@ -1474,16 +1726,18 @@ async function init() {
         "colorScheme",
       ])
       blockedKeywords = storageData.blockedKeywords || []
-      colorScheme = storageData.colorScheme || "light"
+      if (storageData.colorScheme) {
+        currentColorScheme = storageData.colorScheme
+      }
     } catch (err) {
       console.error("Chrome not defined at this point", err)
     }
   }
-  (0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_2__.filterContent)(blockedKeywords)
+  (0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_2__.filterContent)(blockedKeywords, detectedTheme, currentColorScheme)
 
   // applyColorChanger(colorScheme)
-  ;(0,_colorTheme_colorChanger_colorAnimation_js__WEBPACK_IMPORTED_MODULE_5__.colorAnimation)(colorScheme, detectedTheme)
-  ;(0,_observePageChanges_js__WEBPACK_IMPORTED_MODULE_1__.observePageChanges)()
+  ;(0,_colorTheme_colorChanger_colorAnimation_js__WEBPACK_IMPORTED_MODULE_5__.colorAnimation)(currentColorScheme, detectedTheme)
+  ;(0,_observePageChanges_js__WEBPACK_IMPORTED_MODULE_1__.observePageChanges)(currentColorScheme, detectedTheme)
 }
 
 if (document.readyState === "loading") {
