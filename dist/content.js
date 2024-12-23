@@ -631,6 +631,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _styles_applyStyles__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../styles/applyStyles */ "./src/components/styles/applyStyles.js");
 
 function hideAndRemoveElement(element) {
+  if (element.hasAttribute("data-processed")) {
+    return
+  }
+  element.setAttribute("data-processed", "true")
+
 
   chrome.storage.sync.get(
     ["blockedKeywords", "blockedCategory", "restrictAdult", "animationStyle"],
@@ -640,37 +645,49 @@ function hideAndRemoveElement(element) {
     }
   )
 
-  chrome.storage.sync.get("animationStyle", function (data) { // <--- ADD THIS LINE
-    const animationStyle = data.animationStyle || "displayNone"; // <--- ADD THIS LINE
+  chrome.storage.sync.get("animationStyle", function (data) {
+    // <--- ADD THIS LINE
+    // Check element type and get renderer
+    let renderer
+    let isShort = false
 
-    const renderer = element.closest(
-      "ytd-rich-item-renderer, ytd-video-renderer, ytd-reel-item-renderer"
-    )
+    if (element.closest("#content > ytm-shorts-lockup-view-model-v2")) {
+      renderer = element.closest("#content > ytm-shorts-lockup-view-model-v2")
+      isShort = true
+    } else if (element.closest("ytd-rich-grid-media")) {
+      renderer = element.closest("ytd-rich-grid-media").closest("#content")
+      // Hide #text element for videos
+      const textElement = renderer.querySelector("#channel-name")
+      if (textElement) {
+        textElement.style.display = "none"
+      }
+    }
 
-    if (!renderer) {
-      console.log("No renderer found for the element:", element)
+    if (!renderer || renderer.hasAttribute("data-styled")) {
       return
     }
 
+    const animationStyle = data.animationStyle || "displayNone"
+
     switch (animationStyle) {
       case "displayNone":
-        (0,_styles_applyStyles__WEBPACK_IMPORTED_MODULE_0__.applyDisplayNoneStyle)(renderer)
+        ;(0,_styles_applyStyles__WEBPACK_IMPORTED_MODULE_0__.applyDisplayNoneStyle)(renderer)
         break
 
       case "crossedOut":
         ;(0,_styles_applyStyles__WEBPACK_IMPORTED_MODULE_0__.applyCrossedOutStyle)(renderer)
         break
-      
+
       case "premiumBlock":
         ;(0,_styles_applyStyles__WEBPACK_IMPORTED_MODULE_0__.applyPremiumBlockStyle)(renderer)
         break
-      
+
       case "svgBlock":
         ;(0,_styles_applyStyles__WEBPACK_IMPORTED_MODULE_0__.applySvgBlockStyle)(renderer)
         break
-      
+
       case "applyGradient":
-        ;(0,_styles_applyStyles__WEBPACK_IMPORTED_MODULE_0__.applyGradientBlockStyle)(renderer)
+        ;(0,_styles_applyStyles__WEBPACK_IMPORTED_MODULE_0__.applyGradientBlockStyle)(renderer, isShort)
         break
 
       default:
@@ -1094,7 +1111,10 @@ function applySvgBlockStyle(renderer){
   renderer.appendChild(svg)
 }
 
-function applyGradientBlockStyle(renderer) {
+function applyGradientBlockStyle(renderer, isShort) {
+  if (renderer.hasAttribute("data-styled")) return
+  renderer.setAttribute("data-styled", "true")
+
   const overlay = document.createElement("div")
   overlay.style.position = "absolute"
   overlay.style.top = "0"
@@ -1102,16 +1122,22 @@ function applyGradientBlockStyle(renderer) {
   overlay.style.width = "100%"
   overlay.style.height = "100%"
   overlay.style.zIndex = "10"
-  overlay.style.backgroundImage = `radial-gradient(circle at 53% 25%, rgba(203, 203, 203,0.04) 0%, rgba(203, 203, 203,0.04) 36%,transparent 36%, transparent 100%),radial-gradient(circle at 48% 27%, rgba(22, 22, 22,0.04) 0%, rgba(22, 22, 22,0.04) 45%,transparent 45%, transparent 100%),radial-gradient(circle at 65% 50%, rgba(219, 219, 219,0.04) 0%, rgba(219, 219, 219,0.04) 61%,transparent 61%, transparent 100%),radial-gradient(circle at 78% 82%, rgba(229, 229, 229,0.04) 0%, rgba(229, 229, 229,0.04) 26%,transparent 26%, transparent 100%),radial-gradient(circle at 99% 75%, rgba(96, 96, 96,0.04) 0%, rgba(96, 96, 96,0.04) 31%,transparent 31%, transparent 100%),radial-gradient(circle at 17% 28%, rgba(188, 188, 188,0.04) 0%, rgba(188, 188, 188,0.04) 15%,transparent 15%, transparent 100%),radial-gradient(circle at 19% 19%, rgba(25, 25, 25,0.04) 0%, rgba(25, 25, 25,0.04) 68%,transparent 68%, transparent 100%),radial-gradient(circle at 35% 23%, rgba(31, 31, 31,0.04) 0%, rgba(31, 31, 31,0.04) 18%,transparent 18%, transparent 100%),linear-gradient(90deg, rgb(138, 193, 238),rgb(20, 21, 171))`
+
+  // Different gradient based on content type
+  overlay.style.backgroundImage = isShort
+    ? `linear-gradient(180deg, rgba(138, 193, 238, 0.9), rgba(20, 21, 171, 0.9))`
+    : `radial-gradient(circle at 53% 25%, rgba(203, 203, 203,0.04) 0%, rgba(203, 203, 203,0.04) 36%,transparent 36%, transparent 100%),radial-gradient(circle at 48% 27%, rgba(22, 22, 22,0.04) 0%, rgba(22, 22, 22,0.04) 45%,transparent 45%, transparent 100%),radial-gradient(circle at 65% 50%, rgba(219, 219, 219,0.04) 0%, rgba(219, 219, 219,0.04) 61%,transparent 61%, transparent 100%),radial-gradient(circle at 78% 82%, rgba(229, 229, 229,0.04) 0%, rgba(229, 229, 229,0.04) 26%,transparent 26%, transparent 100%),radial-gradient(circle at 99% 75%, rgba(96, 96, 96,0.04) 0%, rgba(96, 96, 96,0.04) 31%,transparent 31%, transparent 100%),radial-gradient(circle at 17% 28%, rgba(188, 188, 188,0.04) 0%, rgba(188, 188, 188,0.04) 15%,transparent 15%, transparent 100%),radial-gradient(circle at 19% 19%, rgba(25, 25, 25,0.04) 0%, rgba(25, 25, 25,0.04) 68%,transparent 68%, transparent 100%),radial-gradient(circle at 35% 23%, rgba(31, 31, 31,0.04) 0%, rgba(31, 31, 31,0.04) 18%,transparent 18%, transparent 100%),linear-gradient(90deg, rgb(138, 193, 238),rgb(20, 21, 171))`
 
   const text = document.createElement("div")
-  text.textContent = "Content Blocked"
+  text.textContent = isShort ? "Short Blocked" : "Content Blocked"
   text.style.position = "absolute"
   text.style.top = "50%"
   text.style.left = "50%"
-  text.style.transform = "translate(-50%, -50%)"
+  text.style.transform = isShort
+    ? "translate(-50%, -50%) rotate(-90deg)"
+    : "translate(-50%, -50%)"
   text.style.color = "#ffffff"
-  text.style.fontSize = "1.5rem"
+  text.style.fontSize = isShort ? "1rem" : "1.5rem"
   text.style.zIndex = "11"
 
   renderer.style.position = "relative"
