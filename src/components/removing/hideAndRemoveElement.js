@@ -21,7 +21,10 @@ function hideAndRemoveElement(element, detectedTheme, colorScheme) {
     let isShort = false
 
     if (element.closest("#content > ytm-shorts-lockup-view-model-v2")) {
-      renderer = element.closest("#content > ytm-shorts-lockup-view-model-v2")
+      const contentElement = element.closest("#content")
+      if (contentElement) {
+        renderer = contentElement.closest("ytd-rich-item-renderer")
+      }
       isShort = true
     } else if (element.closest("ytd-rich-grid-media")) {
       renderer = element.closest("ytd-rich-grid-media").closest("#content")

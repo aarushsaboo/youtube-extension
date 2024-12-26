@@ -338,6 +338,11 @@ function colorAnimation(scheme = "dark", theme) {
                 border-color: ${convertToRGBA(secondaryColor, 0.5)} !important;
               }
 
+            /* show more button that sometimes appears*/
+            .button-container.ytd-rich-shelf-renderer{
+              background-color: ${primaryColor};
+            }
+
         /* subscriptions page */
         #page-header, #tabs-inner-container, #page-header-banner {
           background-color: ${primaryColor} !important;
