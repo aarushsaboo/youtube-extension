@@ -353,6 +353,11 @@ function colorAnimation(scheme = "dark", theme) {
                 border-color: ${(0,_components_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_0__.convertToRGBA)(secondaryColor, 0.5)} !important;
               }
 
+            /* show more button that sometimes appears*/
+            .button-container.ytd-rich-shelf-renderer{
+              background-color: ${primaryColor};
+            }
+
         /* subscriptions page */
         #page-header, #tabs-inner-container, #page-header-banner {
           background-color: ${primaryColor} !important;
@@ -1146,18 +1151,21 @@ function applyGradientBlockStyle(
   const quaternaryRGBA = (0,_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_1__.convertToRGBA)(quaternary, 0.05)
 
   // Apply the requested gradient using the RGBA colors
-  overlay.style.backgroundImage = `
-    radial-gradient(circle at 29% 55%, ${primaryRGBA} 0%, ${primaryRGBA} 4%, transparent 4%, transparent 44%, transparent 44%, transparent 100%),
-    radial-gradient(circle at 85% 89%, ${secondaryRGBA} 0%, ${secondaryRGBA} 51%, transparent 51%, transparent 52%, transparent 52%, transparent 100%),
-    radial-gradient(circle at 6% 90%, ${tertiaryRGBA} 0%, ${tertiaryRGBA} 53%, transparent 53%, transparent 64%, transparent 64%, transparent 100%),
-    radial-gradient(circle at 35% 75%, ${quaternaryRGBA} 0%, ${quaternaryRGBA} 6%, transparent 6%, transparent 98%, transparent 98%, transparent 100%),
-    radial-gradient(circle at 56% 75%, ${primaryRGBA} 0%, ${primaryRGBA} 16%, transparent 16%, transparent 23%, transparent 23%, transparent 100%),
-    radial-gradient(circle at 42% 0%, ${secondaryRGBA} 0%, ${secondaryRGBA} 3%, transparent 3%, transparent 26%, transparent 26%, transparent 100%),
-    radial-gradient(circle at 29% 28%, ${tertiaryRGBA} 0%, ${tertiaryRGBA} 51%, transparent 51%, transparent 75%, transparent 75%, transparent 100%),
-    radial-gradient(circle at 77% 21%, ${quaternaryRGBA} 0%, ${quaternaryRGBA} 35%, transparent 35%, transparent 55%, transparent 55%, transparent 100%),
-    radial-gradient(circle at 65% 91%, ${primaryRGBA} 0%, ${primaryRGBA} 46%, transparent 46%, transparent 76%, transparent 76%, transparent 100%),
-    linear-gradient(45deg, ${secondary}, ${quaternary})
-  `
+  // overlay.style.backgroundImage = `
+  //   radial-gradient(circle at 29% 55%, ${primaryRGBA} 0%, ${primaryRGBA} 4%, transparent 4%, transparent 44%, transparent 44%, transparent 100%),
+  //   radial-gradient(circle at 85% 89%, ${secondaryRGBA} 0%, ${secondaryRGBA} 51%, transparent 51%, transparent 52%, transparent 52%, transparent 100%),
+  //   radial-gradient(circle at 6% 90%, ${tertiaryRGBA} 0%, ${tertiaryRGBA} 53%, transparent 53%, transparent 64%, transparent 64%, transparent 100%),
+  //   radial-gradient(circle at 35% 75%, ${quaternaryRGBA} 0%, ${quaternaryRGBA} 6%, transparent 6%, transparent 98%, transparent 98%, transparent 100%),
+  //   radial-gradient(circle at 56% 75%, ${primaryRGBA} 0%, ${primaryRGBA} 16%, transparent 16%, transparent 23%, transparent 23%, transparent 100%),
+  //   radial-gradient(circle at 42% 0%, ${secondaryRGBA} 0%, ${secondaryRGBA} 3%, transparent 3%, transparent 26%, transparent 26%, transparent 100%),
+  //   radial-gradient(circle at 29% 28%, ${tertiaryRGBA} 0%, ${tertiaryRGBA} 51%, transparent 51%, transparent 75%, transparent 75%, transparent 100%),
+  //   radial-gradient(circle at 77% 21%, ${quaternaryRGBA} 0%, ${quaternaryRGBA} 35%, transparent 35%, transparent 55%, transparent 55%, transparent 100%),
+  //   radial-gradient(circle at 65% 91%, ${primaryRGBA} 0%, ${primaryRGBA} 46%, transparent 46%, transparent 76%, transparent 76%, transparent 100%),
+  //   linear-gradient(45deg, ${secondary}, ${quaternary})
+  // `
+  overlay.style.backgroundImage = `linear-gradient(45deg, ${secondary}, ${primary})`
+  overlay.style.borderRadius = "7px"
+  overlay.style.border = `2px solid ${primary}`
 
   const text = document.createElement("div")
   text.textContent = isShort ? "Short Blocked" : "Content Blocked"
@@ -1165,16 +1173,17 @@ function applyGradientBlockStyle(
   text.style.top = "50%"
   text.style.left = "50%"
   text.style.transform = isShort
-    ? "translate(-50%, -50%) rotate(-90deg)"
+    ? "translate(-50%, -50%)"
     : "translate(-50%, -50%)"
-  text.style.color = "#ffffff"
+  text.style.color = quaternary;
   text.style.fontSize = isShort ? "1rem" : "1.5rem"
   text.style.zIndex = "11"
 
   // Add background to text to ensure it's visible
+  text.style.fontFamily = "Roboto, Arial, sans-serif";
+  text.style.background = primary;
+  text.style.borderRadius = "7px";
   text.style.padding = "5px 10px"
-  text.style.backgroundColor = "rgba(0, 0, 0, 0.5)"
-  text.style.borderRadius = "4px"
 
   renderer.style.position = "relative"
   renderer.style.pointerEvents = "none"
