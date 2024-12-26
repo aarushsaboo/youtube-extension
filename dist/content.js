@@ -1168,7 +1168,7 @@ function applyGradientBlockStyle(
   overlay.style.border = `2px solid ${primary}`
 
   const text = document.createElement("div")
-  text.textContent = isShort ? "Short Blocked" : "Content Blocked"
+  text.textContent = isShort ? "✨Shorts Paused" : "✨Content Sealed"
   text.style.position = "absolute"
   text.style.top = "50%"
   text.style.left = "50%"
