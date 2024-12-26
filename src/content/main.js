@@ -21,6 +21,19 @@ function detectYouTubeTheme() {
   return isDarkTheme || hasYtDarkClass || isDarkBackground ? "dark" : "light"
 }
 
+// Add this before your init function
+if (performance.getEntriesByType("navigation")[0].type === "back_forward") {
+  // If we're coming from back/forward navigation, prevent cache restoration
+  window.location.replace(window.location.href)
+} else {
+  // Normal initialization for fresh page loads
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init)
+    console.log("This is filtering YOUTHOOB... ALERTTTTTT!")
+  } else {
+    init()
+  }
+}
 
 async function init() {
   if (!shouldApplyFiltering(window.location.pathname)) return
