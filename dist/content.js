@@ -1186,7 +1186,6 @@ function applyGradientBlockStyle(
   text.style.padding = "5px 10px"
 
   renderer.style.position = "relative"
-  renderer.style.pointerEvents = "none"
 
   renderer.appendChild(overlay)
   renderer.appendChild(text)
