@@ -1130,67 +1130,90 @@ function applyGradientBlockStyle(
   detectedTheme,
   colorScheme
 ) {
-  const colors = (0,_utils_chooseColors__WEBPACK_IMPORTED_MODULE_0__.chooseColors)(colorScheme, detectedTheme)
-  const { primary, secondary, tertiary, quaternary } = colors
-
   if (renderer.hasAttribute("data-styled")) return
   renderer.setAttribute("data-styled", "true")
 
-  const overlay = document.createElement("div")
-  overlay.style.position = "absolute"
-  overlay.style.top = "0"
-  overlay.style.left = "0"
-  overlay.style.width = "100%"
-  overlay.style.height = "100%"
-  overlay.style.zIndex = "10"
+  const colors = (0,_utils_chooseColors__WEBPACK_IMPORTED_MODULE_0__.chooseColors)(colorScheme, detectedTheme)
+  const { primary, secondary, tertiary, quaternary } = colors
 
-  // Convert hex to rgba for the gradients
-  const primaryRGBA = (0,_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_1__.convertToRGBA)(primary, 0.05)
-  const secondaryRGBA = (0,_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_1__.convertToRGBA)(secondary, 0.05)
-  const tertiaryRGBA = (0,_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_1__.convertToRGBA)(tertiary, 0.05)
-  const quaternaryRGBA = (0,_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_1__.convertToRGBA)(quaternary, 0.05)
+  // Store original styles to potentially restore later
+  if (!renderer.hasAttribute("data-original-position")) {
+    renderer.setAttribute(
+      "data-original-position",
+      renderer.style.position || ""
+    )
+    renderer.setAttribute(
+      "data-original-background",
+      renderer.style.background || ""
+    )
+  }
 
-  // Apply the requested gradient using the RGBA colors
-  // overlay.style.backgroundImage = `
-  //   radial-gradient(circle at 29% 55%, ${primaryRGBA} 0%, ${primaryRGBA} 4%, transparent 4%, transparent 44%, transparent 44%, transparent 100%),
-  //   radial-gradient(circle at 85% 89%, ${secondaryRGBA} 0%, ${secondaryRGBA} 51%, transparent 51%, transparent 52%, transparent 52%, transparent 100%),
-  //   radial-gradient(circle at 6% 90%, ${tertiaryRGBA} 0%, ${tertiaryRGBA} 53%, transparent 53%, transparent 64%, transparent 64%, transparent 100%),
-  //   radial-gradient(circle at 35% 75%, ${quaternaryRGBA} 0%, ${quaternaryRGBA} 6%, transparent 6%, transparent 98%, transparent 98%, transparent 100%),
-  //   radial-gradient(circle at 56% 75%, ${primaryRGBA} 0%, ${primaryRGBA} 16%, transparent 16%, transparent 23%, transparent 23%, transparent 100%),
-  //   radial-gradient(circle at 42% 0%, ${secondaryRGBA} 0%, ${secondaryRGBA} 3%, transparent 3%, transparent 26%, transparent 26%, transparent 100%),
-  //   radial-gradient(circle at 29% 28%, ${tertiaryRGBA} 0%, ${tertiaryRGBA} 51%, transparent 51%, transparent 75%, transparent 75%, transparent 100%),
-  //   radial-gradient(circle at 77% 21%, ${quaternaryRGBA} 0%, ${quaternaryRGBA} 35%, transparent 35%, transparent 55%, transparent 55%, transparent 100%),
-  //   radial-gradient(circle at 65% 91%, ${primaryRGBA} 0%, ${primaryRGBA} 46%, transparent 46%, transparent 76%, transparent 76%, transparent 100%),
-  //   linear-gradient(45deg, ${secondary}, ${quaternary})
-  // `
-  overlay.style.backgroundImage = `linear-gradient(45deg, ${primary}, ${primary})`
-  overlay.style.borderRadius = "7px"
-  overlay.style.border = `1px solid ${secondary}`
+  // Apply styles directly to the renderer
+  Object.assign(renderer.style, {
+    position: "relative",
+    background: primary,
+    borderRadius: "7px",
+    border: `1px solid ${secondary}`,
+    overflow: "hidden", // Ensure content doesn't overflow
+    pointerEvents: "none"
+  })
 
-  const text = document.createElement("div")
-  text.textContent = isShort ? "✨Shorts Paused" : "✨Content Sealed"
-  text.style.position = "absolute"
-  text.style.top = "50%"
-  text.style.left = "50%"
-  text.style.transform = isShort
-    ? "translate(-50%, -50%)"
-    : "translate(-50%, -50%)"
-  text.style.color = secondary;
-  text.style.fontSize = isShort ? "1rem" : "1.5rem"
-  text.style.zIndex = "11"
+  if (isShort) {
+    const shortsContent = renderer.querySelector(
+      "#content > ytm-shorts-lockup-view-model-v2"
+    )
+    if (shortsContent) {
+      shortsContent.style.opacity = "0"
+      shortsContent.style.transition = "opacity 0.3s ease"
+    }
+  }
 
-  // Add background to text to ensure it's visible
-  text.style.fontFamily = "Roboto, Arial, sans-serif";
-  text.style.background = primary;
-  text.style.borderRadius = "7px";
-  text.style.padding = "5px 10px"
+  // Create text overlay without additional div
+  renderer.style.setProperty(
+    "--content-text",
+    isShort ? '"✨Shorts Paused"' : '"✨Content Sealed"'
+  )
 
-  renderer.style.position = "relative"
+  // Add pseudo-element for text using CSS
+  const styleId = "gradient-block-style"
+  if (!document.getElementById(styleId)) {
+    const style = document.createElement("style")
+    style.id = styleId
+    style.textContent = `
+      [data-styled="true"]::before {
+        content: var(--content-text);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: ${secondary};
+        font-size: var(--content-font-size);
+        z-index: 11;
+        font-family: Roboto, Arial, sans-serif;
+        background: ${primary};
+        border-radius: 7px;
+        padding: 5px 10px;
+        pointer-events: none;
+      }
+    `
+    document.head.appendChild(style)
+  }
 
-  renderer.appendChild(overlay)
-  renderer.appendChild(text)
+  // Set font size as a CSS variable
+  renderer.style.setProperty("--content-font-size", isShort ? "1rem" : "1.5rem")
+
+  // Apply backdrop filter for a frosted glass effect (optional)
+  renderer.style.backdropFilter = "blur(4px)"
+
+  // Hide the actual content
+  const contentElements = renderer.querySelectorAll(
+    "ytd-thumbnail, ytd-rich-grid-media"
+  )
+  contentElements.forEach((element) => {
+    element.style.opacity = "0"
+    element.style.transition = "opacity 0.3s ease"
+  })
 }
-
 
 
 
