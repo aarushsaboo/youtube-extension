@@ -415,9 +415,9 @@ function applyGradientBlockStyle(
   //   radial-gradient(circle at 65% 91%, ${primaryRGBA} 0%, ${primaryRGBA} 46%, transparent 46%, transparent 76%, transparent 76%, transparent 100%),
   //   linear-gradient(45deg, ${secondary}, ${quaternary})
   // `
-  overlay.style.backgroundImage = `linear-gradient(45deg, ${secondary}, ${primary})`
+  overlay.style.backgroundImage = `linear-gradient(45deg, ${primary}, ${primary})`
   overlay.style.borderRadius = "7px"
-  overlay.style.border = `2px solid ${primary}`
+  overlay.style.border = `1px solid ${secondary}`
 
   const text = document.createElement("div")
   text.textContent = isShort ? "✨Shorts Paused" : "✨Content Sealed"
@@ -427,7 +427,7 @@ function applyGradientBlockStyle(
   text.style.transform = isShort
     ? "translate(-50%, -50%)"
     : "translate(-50%, -50%)"
-  text.style.color = quaternary;
+  text.style.color = secondary;
   text.style.fontSize = isShort ? "1rem" : "1.5rem"
   text.style.zIndex = "11"
 
