@@ -375,7 +375,6 @@ function applySvgBlockStyle(renderer){
 `
   renderer.appendChild(svg)
 }
-
 function applyGradientBlockStyle(
   renderer,
   isShort,
@@ -400,39 +399,23 @@ function applyGradientBlockStyle(
     )
   }
 
-  // Apply styles directly to the renderer
-  Object.assign(renderer.style, {
-    position: "relative",
-    background: primary,
-    borderRadius: "7px",
-    border: `1px solid ${secondary}`,
-    overflow: "hidden", // Ensure content doesn't overflow
-    pointerEvents: "none"
-  })
-
-  if (isShort) {
-    const shortsContent = renderer.querySelector(
-      "#content > ytm-shorts-lockup-view-model-v2"
-    )
-    if (shortsContent) {
-      shortsContent.style.opacity = "0"
-      shortsContent.style.transition = "opacity 0.3s ease"
-    }
-  }
-
-  // Create text overlay without additional div
-  renderer.style.setProperty(
-    "--content-text",
-    isShort ? '"✨Shorts Paused"' : '"✨Content Sealed"'
-  )
-
-  // Add pseudo-element for text using CSS
-  const styleId = "gradient-block-style"
+  // Define the style classes if they don't exist
+  const styleId = "gradient-block-styles"
   if (!document.getElementById(styleId)) {
     const style = document.createElement("style")
     style.id = styleId
     style.textContent = `
-      [data-styled="true"]::before {
+      .gradient-block-base {
+        position: relative;
+        background: ${primary};
+        border-radius: 7px;
+        border: 1px solid ${secondary};
+        overflow: hidden;
+        pointer-events: none;
+        backdrop-filter: blur(4px);
+      }
+
+      .gradient-block-base::before {
         content: var(--content-text);
         position: absolute;
         top: 50%;
@@ -447,24 +430,33 @@ function applyGradientBlockStyle(
         padding: 5px 10px;
         pointer-events: none;
       }
+
+      .gradient-block-base.shorts-content #content > ytm-shorts-lockup-view-model-v2 {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .gradient-block-base.video-content ytd-rich-grid-media {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
     `
     document.head.appendChild(style)
   }
 
-  // Set font size as a CSS variable
-  renderer.style.setProperty("--content-font-size", isShort ? "1rem" : "1.5rem")
+  // Apply the base class
+  renderer.classList.add("gradient-block-base")
 
-  // Apply backdrop filter for a frosted glass effect (optional)
-  renderer.style.backdropFilter = "blur(4px)"
-
-  // Hide the actual content
-  const contentElements = renderer.querySelectorAll(
-    "ytd-thumbnail, ytd-rich-grid-media"
-  )
-  contentElements.forEach((element) => {
-    element.style.opacity = "0"
-    element.style.transition = "opacity 0.3s ease"
-  })
+  // Add content-specific class
+  if (isShort) {
+    renderer.classList.add("shorts-content")
+    renderer.style.setProperty("--content-text", '"✨Shorts Paused"')
+    renderer.style.setProperty("--content-font-size", "1rem")
+  } else {
+    renderer.classList.add("video-content")
+    renderer.style.setProperty("--content-text", '"✨Content Sealed"')
+    renderer.style.setProperty("--content-font-size", "1.5rem")
+  }
 }
 
 export { applyDisplayNoneStyle , applyCrossedOutStyle, applyPremiumBlockStyle, applySvgBlockStyle, applyGradientBlockStyle}
