@@ -407,12 +407,12 @@ function applyGradientBlockStyle(
     style.textContent = `
       .gradient-block-base {
         position: relative;
-        background: ${primary};
-        border-radius: 7px;
-        border: 1px solid ${secondary};
+        background-color: var(--yt-spec-badge-chip-background);
+        border-radius: 8px;
         overflow: hidden;
         pointer-events: none;
         backdrop-filter: blur(4px);
+        box-sizing: border-box;
       }
 
       .gradient-block-base::before {
@@ -425,10 +425,14 @@ function applyGradientBlockStyle(
         font-size: var(--content-font-size);
         z-index: 11;
         font-family: Roboto, Arial, sans-serif;
-        background: ${primary};
-        border-radius: 7px;
-        padding: 5px 10px;
+        font-size: 1.4rem;
+        line-height: 2rem;
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0 var(--ytd-margin-3x);
         pointer-events: none;
+        box-sizing: border-box;
+        text-align: center;
       }
 
       .gradient-block-base.shorts-content #content > ytm-shorts-lockup-view-model-v2 {
@@ -450,11 +454,11 @@ function applyGradientBlockStyle(
   // Add content-specific class
   if (isShort) {
     renderer.classList.add("shorts-content")
-    renderer.style.setProperty("--content-text", '"✨Shorts Paused"')
+    renderer.style.setProperty("--content-text", '"Shorts Paused"')
     renderer.style.setProperty("--content-font-size", "1rem")
   } else {
     renderer.classList.add("video-content")
-    renderer.style.setProperty("--content-text", '"✨Content Sealed"')
+    renderer.style.setProperty("--content-text", '"Content Sealed"')
     renderer.style.setProperty("--content-font-size", "1.5rem")
   }
 }
