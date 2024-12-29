@@ -1,6 +1,7 @@
 import { hideAndRemoveElement } from "../removing/hideAndRemoveElement"
 import { CONFIG }  from "../../content/config"
-const ALLOWED_CATEGORIES = ["Education", "Sports"]
+const BLOCKED_CATEGORIES = ["Entertainment", "Travel & Events", "Sports"]
+const PROBABILITY_THRESHOLD = 0.08 // Adjust this threshold based on confidence needed
 
 function isBlockedByCategory(title, classifier) {
   try {
@@ -18,12 +19,24 @@ function isBlockedByCategory(title, classifier) {
       : "0"
     const views = parseInt(viewsText.replace(/[^0-9]/g, "")) || 0
 
-    // Get predicted category
-    const predictedCategory = classifier.predict(title, channel, views)
-    console.log(`Predicted category for "${title}": ${predictedCategory}`)
+    // Get prediction result
+    const result = classifier.predict(title, channel, views)
+    console.log(`Prediction for "${title}":`, result)
 
-    // Block if not in allowed categories
-    return !ALLOWED_CATEGORIES.includes(predictedCategory)
+    // Check if any blocked category has high probability
+    for (const category of BLOCKED_CATEGORIES) {
+      const probability = result.probabilities[category]
+      if (probability > PROBABILITY_THRESHOLD) {
+        console.log(
+          `Blocking due to high probability (${probability.toFixed(
+            3
+          )}) for category: ${category}`
+        )
+        return true
+      }
+    }
+
+    return false // Don't block if no blocked category has high probability
   } catch (error) {
     console.error("Error predicting category:", error)
     return false // Don't block on errors

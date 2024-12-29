@@ -54,6 +54,14 @@ async function init() {
 
   // Initialize classifier first
   await initializeClassifier()
+  const result = classifier.predict(
+    "Amazing Travel Vlog in Paris",
+    "TravelChannel",
+    50000
+  )
+
+  console.log("Predicted category:", result.category)
+  console.log("Probabilities:", result.probabilities)
 
   let blockedKeywords = []
   let colorScheme = "gloriousblue"

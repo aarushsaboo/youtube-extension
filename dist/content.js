@@ -567,7 +567,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _content_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../content/config */ "./src/content/config.js");
 
 
-const ALLOWED_CATEGORIES = ["Education", "Sports"]
+const BLOCKED_CATEGORIES = ["Entertainment", "Travel & Events", "Sports"]
+const PROBABILITY_THRESHOLD = 0.08 // Adjust this threshold based on confidence needed
 
 function isBlockedByCategory(title, classifier) {
   try {
@@ -585,12 +586,24 @@ function isBlockedByCategory(title, classifier) {
       : "0"
     const views = parseInt(viewsText.replace(/[^0-9]/g, "")) || 0
 
-    // Get predicted category
-    const predictedCategory = classifier.predict(title, channel, views)
-    console.log(`Predicted category for "${title}": ${predictedCategory}`)
+    // Get prediction result
+    const result = classifier.predict(title, channel, views)
+    console.log(`Prediction for "${title}":`, result)
 
-    // Block if not in allowed categories
-    return !ALLOWED_CATEGORIES.includes(predictedCategory)
+    // Check if any blocked category has high probability
+    for (const category of BLOCKED_CATEGORIES) {
+      const probability = result.probabilities[category]
+      if (probability > PROBABILITY_THRESHOLD) {
+        console.log(
+          `Blocking due to high probability (${probability.toFixed(
+            3
+          )}) for category: ${category}`
+        )
+        return true
+      }
+    }
+
+    return false // Don't block if no blocked category has high probability
   } catch (error) {
     console.error("Error predicting category:", error)
     return false // Don't block on errors
@@ -1656,7 +1669,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   YouTubeCategoryClassifier: () => (/* binding */ YouTubeCategoryClassifier)
 /* harmony export */ });
-// classifier-service.js
 class YouTubeCategoryClassifier {
   constructor() {
     this.modelData = null
@@ -1669,6 +1681,16 @@ class YouTubeCategoryClassifier {
         chrome.runtime.getURL("dist/model/browser_model.json")
       )
       this.modelData = await response.json()
+
+      // Validate the model data
+      if (
+        !this.modelData.categories ||
+        !this.modelData.weights ||
+        !this.modelData.weights.trees
+      ) {
+        throw new Error("Invalid model data structure")
+      }
+
       this.isInitialized = true
       console.log(
         "Classifier initialized with categories:",
@@ -1676,14 +1698,14 @@ class YouTubeCategoryClassifier {
       )
     } catch (error) {
       console.error("Failed to initialize classifier:", error)
+      this.isInitialized = false
       throw error
     }
   }
 
-  // Convert text to character n-grams
   getNGrams(text, minN = 3, maxN = 5) {
     const ngrams = new Map()
-    const lowercaseText = text.toLowerCase()
+    const lowercaseText = String(text).toLowerCase()
 
     for (let n = minN; n <= maxN; n++) {
       for (let i = 0; i <= lowercaseText.length - n; i++) {
@@ -1694,7 +1716,6 @@ class YouTubeCategoryClassifier {
     return ngrams
   }
 
-  // Create feature vector for text
   getTextFeatures(text, vocabulary, idf) {
     const features = new Float32Array(Object.keys(vocabulary).length).fill(0)
     const ngrams = this.getNGrams(text)
@@ -1709,43 +1730,132 @@ class YouTubeCategoryClassifier {
     return features
   }
 
-  // Normalize view count
   normalizeViews(views) {
+    const numViews = Number(views) || 0
     return (
-      (views - this.modelData.viewScaleParams.mean) /
+      (numViews - this.modelData.viewScaleParams.mean) /
       this.modelData.viewScaleParams.std
     )
   }
 
+  traverseTree(tree, features) {
+    let currentNode = 0
+    const nodes = tree.nodes
+
+    while (currentNode < nodes.value.length && !nodes.is_leaf[currentNode]) {
+      const featureIdx = nodes.feature_idx[currentNode]
+      const threshold = nodes.num_threshold[currentNode]
+      const goLeft = nodes.missing_go_to_left[currentNode]
+
+      const featureValue = features[featureIdx]
+
+      if (featureValue === undefined || Number.isNaN(featureValue)) {
+        currentNode = goLeft
+          ? nodes.left[currentNode]
+          : nodes.right[currentNode]
+      } else {
+        currentNode =
+          featureValue <= threshold
+            ? nodes.left[currentNode]
+            : nodes.right[currentNode]
+      }
+    }
+
+    return nodes.value[currentNode] || 0
+  }
+
+  predictRaw(features) {
+    const numClasses = this.modelData.categories.length
+    const predictions = new Float32Array(numClasses).fill(0)
+
+    // Add baseline prediction if available
+    if (this.modelData.weights.baseline_prediction) {
+      const baseline = this.modelData.weights.baseline_prediction[0]
+      if (Array.isArray(baseline)) {
+        predictions.set(baseline)
+      }
+    }
+
+    // Iterate through each class
+    for (let classIdx = 0; classIdx < numClasses; classIdx++) {
+      const classTrees = this.modelData.weights.trees[classIdx]
+      if (!classTrees) continue
+
+      // Sum predictions from all trees for this class
+      for (const tree of classTrees) {
+        if (!tree || !tree.nodes) continue
+        const treeValue = this.traverseTree(tree, features)
+        predictions[classIdx] += treeValue
+      }
+
+      // Apply learning rate
+      predictions[classIdx] *= this.modelData.weights.learning_rate
+    }
+
+    return predictions
+  }
+
+  softmax(raw) {
+    const maxVal = Math.max(...raw)
+    const expScores = raw.map((score) => Math.exp(score - maxVal))
+    const expSum = expScores.reduce((a, b) => a + b, 0)
+    return expScores.map((score) => score / expSum)
+  }
+
   predict(title, channel, views) {
-    if (!this.isInitialized) {
+    if (!this.isInitialized || !this.modelData) {
       throw new Error("Classifier not initialized. Call initialize() first.")
     }
 
-    // Get features
-    const titleFeatures = this.getTextFeatures(
-      title,
-      this.modelData.titleVocab,
-      this.modelData.titleIdf
-    )
+    try {
+      // Get features
+      const titleFeatures = this.getTextFeatures(
+        title,
+        this.modelData.titleVocab,
+        this.modelData.titleIdf
+      )
 
-    const channelFeatures = this.getTextFeatures(
-      channel,
-      this.modelData.channelVocab,
-      this.modelData.channelIdf
-    )
+      const channelFeatures = this.getTextFeatures(
+        channel,
+        this.modelData.channelVocab,
+        this.modelData.channelIdf
+      )
 
-    const normalizedViews = this.normalizeViews(views)
+      const normalizedViews = this.normalizeViews(views)
 
-    // Combine all features
-    const features = new Float32Array([
-      ...titleFeatures,
-      ...channelFeatures,
-      normalizedViews,
-    ])
+      // Combine all features
+      const features = new Float32Array([
+        ...titleFeatures,
+        ...channelFeatures,
+        normalizedViews,
+      ])
 
-    // Get predicted category
-    return this.modelData.categories[0] // Temporary return first category
+      // Get raw predictions
+      const rawPredictions = this.predictRaw(features)
+
+      // Convert to probabilities
+      const probabilities = this.softmax(rawPredictions)
+
+      // Get the index of the highest probability
+      const predictedIdx = probabilities.reduce(
+        (maxIdx, curr, idx, arr) => (curr > arr[maxIdx] ? idx : maxIdx),
+        0
+      )
+
+      // Return predicted category and probabilities
+      const result = {
+        category: this.modelData.categories[predictedIdx],
+        probabilities: Object.fromEntries(
+          this.modelData.categories.map((cat, idx) => [cat, probabilities[idx]])
+        ),
+      }
+
+      console.log("Prediction result:", result)
+      return result
+    } catch (error) {
+      console.error("Prediction error:", error)
+      throw error
+    }
   }
 }
 
@@ -1937,6 +2047,14 @@ async function init() {
 
   // Initialize classifier first
   await initializeClassifier()
+  const result = classifier.predict(
+    "Amazing Travel Vlog in Paris",
+    "TravelChannel",
+    50000
+  )
+
+  console.log("Predicted category:", result.category)
+  console.log("Probabilities:", result.probabilities)
 
   let blockedKeywords = []
   let colorScheme = "gloriousblue"
