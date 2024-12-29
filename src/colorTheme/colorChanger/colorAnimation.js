@@ -217,7 +217,7 @@ function colorAnimation(scheme = "dark", theme) {
     }
 
     /* Sidebar buttons + 2nd sidebar's categories & its header & its footer & its inner stuff + 2nd sidebar's additional stuff */
-    #items, ytd-guide-section-renderer, #guide-content.ytd-app, ytd-guide-renderer #footer, #guide-inner-content{
+    ytd-guide-section-renderer #items, ytd-guide-section-renderer, #guide-content.ytd-app, ytd-guide-renderer #footer, #guide-inner-content{
         background-color: ${primaryColor} !important;
     }
 
@@ -321,8 +321,8 @@ function colorAnimation(scheme = "dark", theme) {
         #name #container #text-container yt-formatted-string{
           color: ${secondaryColor} !important;
         }
-        /* show transcript button */
-        .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--outline{
+        /* show transcript button, transcript's text(links) */
+        .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--outline, yt-formatted-string[has-link-only_]:not([force-default-style]) a.yt-simple-endpoint.yt-formatted-string, #info > a{
           color: ${secondaryColor} !important;
           border-color: ${convertToRGBA(secondaryColor, 0.2)} !important;
         }
@@ -345,6 +345,16 @@ function colorAnimation(scheme = "dark", theme) {
 
         /* subscriptions page */
         #page-header, #tabs-inner-container, #page-header-banner {
+          background-color: ${primaryColor} !important;
+        }
+          /* watch later, share button overlay, other overlays, removed as too disturbing
+          .header.ytd-playlist-panel-renderer, body > ytd-app > ytd-popup-container > tp-yt-paper-dialog, body > ytd-app > ytd-popup-container > tp-yt-paper-dialog:nth-child(3) > ytd-download-quality-selector-renderer, #header > yt-pdg-buy-flow-header-renderer, #content{
+            background-color: ${primaryColor} !important;
+          } */
+
+
+        /* live chat (2) + watch later*/
+        .header.ytd-playlist-panel-renderer{
           background-color: ${primaryColor} !important;
         }
   `
