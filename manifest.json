@@ -42,5 +42,11 @@
         "path": "rules.json"
       }
     ]
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["dist/model/browser_model.json"],
+      "matches": ["https://*.youtube.com/*"]
+    }
+  ]
 }

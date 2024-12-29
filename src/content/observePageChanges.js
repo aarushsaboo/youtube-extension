@@ -1,7 +1,7 @@
 import { debounce } from "../components/utils/debounce.js"
 import { filterContent } from "../components/filtering/filterContent.js"
 
-export function observePageChanges(currentColorScheme, detectedTheme) {
+export function observePageChanges(currentColorScheme, detectedTheme, classifier) {
 
   if (typeof chrome === "undefined" || !chrome.runtime || !chrome.storage) {
     console.error("Chrome extension APIs not available")
@@ -20,11 +20,11 @@ export function observePageChanges(currentColorScheme, detectedTheme) {
 
           const blockedKeywords = result.blockedKeywords || []
 
-          if (blockedKeywords.length === 0) return
+          // if (blockedKeywords.length === 0) return
 
           // Wrap filterContent in a try-catch
           try {
-            filterContent(blockedKeywords, detectedTheme, currentColorScheme)
+            filterContent(blockedKeywords, detectedTheme, currentColorScheme, classifier)
           } catch (filterError) {
             console.error("Content filtering error:", filterError)
           }

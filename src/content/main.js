@@ -5,8 +5,22 @@ import { shouldApplyFiltering } from "../components/filtering/shouldApplyFilteri
 import { applyColorChanger } from "../colorTheme/colorChanger/colorChanger.js"
 import { colorAnimation } from "../colorTheme/colorChanger/colorAnimation.js"
 import { removeAds } from "../removeAds/removeAds.js"
+import { YouTubeCategoryClassifier } from "../model/classifier-service.js"
 
 let currentColorScheme = "gloriousblue" // module level
+let classifier = null
+
+// Initialize classifier
+async function initializeClassifier() {
+  classifier = new YouTubeCategoryClassifier()
+  try {
+    await classifier.initialize()
+    console.log("YouTube classifier initialized successfully")
+  } catch (error) {
+    console.error("Failed to initialize classifier:", error)
+  }
+}
+
 
 function detectYouTubeTheme() {
   const isDarkTheme = document.documentElement.hasAttribute("dark")
@@ -38,6 +52,9 @@ if (performance.getEntriesByType("navigation")[0].type === "back_forward") {
 async function init() {
   if (!shouldApplyFiltering(window.location.pathname)) return
 
+  // Initialize classifier first
+  await initializeClassifier()
+
   let blockedKeywords = []
   let colorScheme = "gloriousblue"
   const detectedTheme = detectYouTubeTheme() // Detect the theme
@@ -56,11 +73,11 @@ async function init() {
       console.log("Chrome not defined at this point", err)
     }
   }
-  filterContent(blockedKeywords, detectedTheme, currentColorScheme)
+  filterContent(blockedKeywords, detectedTheme, currentColorScheme, classifier)
 
   // applyColorChanger(colorScheme)
   colorAnimation(currentColorScheme, detectedTheme)
-  observePageChanges(currentColorScheme, detectedTheme)
+  observePageChanges(currentColorScheme, detectedTheme, classifier)
 }
 
 if (document.readyState === "loading") {

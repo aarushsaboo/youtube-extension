@@ -322,7 +322,7 @@ function colorAnimation(scheme = "dark", theme) {
           color: ${secondaryColor} !important;
         }
         /* show transcript button, transcript's text(links) */
-        .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--outline, yt-formatted-string[has-link-only_]:not([force-default-style]) a.yt-simple-endpoint.yt-formatted-string, #info > a{
+        .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--outline, #info > a{
           color: ${secondaryColor} !important;
           border-color: ${convertToRGBA(secondaryColor, 0.2)} !important;
         }

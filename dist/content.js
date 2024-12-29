@@ -337,7 +337,7 @@ function colorAnimation(scheme = "dark", theme) {
           color: ${secondaryColor} !important;
         }
         /* show transcript button, transcript's text(links) */
-        .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--outline, yt-formatted-string[has-link-only_]:not([force-default-style]) a.yt-simple-endpoint.yt-formatted-string, #info > a{
+        .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--outline, #info > a{
           color: ${secondaryColor} !important;
           border-color: ${(0,_components_utils_convertToRGB__WEBPACK_IMPORTED_MODULE_0__.convertToRGBA)(secondaryColor, 0.2)} !important;
         }
@@ -567,7 +567,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _content_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../content/config */ "./src/content/config.js");
 
 
+const ALLOWED_CATEGORIES = ["Education", "Sports"]
 
+function isBlockedByCategory(title, classifier) {
+  try {
+    // Get channel name and views (required by classifier)
+    const channelElement = document.querySelector(
+      "[href^='//@'], [href^='/channel/']"
+    )
+    const channel = channelElement ? channelElement.textContent.trim() : ""
+
+    const viewCountElement = document.querySelector(
+      "#metadata-line span:first-child"
+    )
+    const viewsText = viewCountElement
+      ? viewCountElement.textContent.trim()
+      : "0"
+    const views = parseInt(viewsText.replace(/[^0-9]/g, "")) || 0
+
+    // Get predicted category
+    const predictedCategory = classifier.predict(title, channel, views)
+    console.log(`Predicted category for "${title}": ${predictedCategory}`)
+
+    // Block if not in allowed categories
+    return !ALLOWED_CATEGORIES.includes(predictedCategory)
+  } catch (error) {
+    console.error("Error predicting category:", error)
+    return false // Don't block on errors
+  }
+}
 
 function isBlocked(title, blockedKeywords) {
   return blockedKeywords.some((keyword) =>
@@ -575,8 +603,8 @@ function isBlocked(title, blockedKeywords) {
   )
 }
 
-function filterContent(blockedKeywords, detectedTheme, colorScheme) {
-  if (!blockedKeywords || blockedKeywords.length === 0) return
+function filterContent(blockedKeywords, detectedTheme, colorScheme, classifier) {
+  // if (!blockedKeywords || blockedKeywords.length === 0) return
 
   _content_config__WEBPACK_IMPORTED_MODULE_1__.CONFIG.SELECTORS.videosAndShorts.forEach((selector) => {
     const contentElements = document.querySelectorAll(selector)
@@ -597,10 +625,18 @@ function filterContent(blockedKeywords, detectedTheme, colorScheme) {
 
       if (!title) return // Skip if no title is found
 
-      if (isBlocked(title, blockedKeywords)) {
-        console.log(title)
-        console.log(blockedKeywords)
-        ;(0,_removing_hideAndRemoveElement__WEBPACK_IMPORTED_MODULE_0__.hideAndRemoveElement)(element, detectedTheme, colorScheme)
+       // Check both keyword blocking and category blocking
+      const shouldBlockByKeywords = isBlocked(title, blockedKeywords);
+      const shouldBlockByCategory = classifier && isBlockedByCategory(title, classifier);
+      console.log('whats going on buddy', shouldBlockByCategory)
+
+      if (shouldBlockByKeywords || shouldBlockByCategory) {
+        console.log('Blocked content:', {
+          title,
+          byKeywords: shouldBlockByKeywords,
+          byCategory: shouldBlockByCategory
+        });
+        (0,_removing_hideAndRemoveElement__WEBPACK_IMPORTED_MODULE_0__.hideAndRemoveElement)(element, detectedTheme, colorScheme);
       }
     })
   })
@@ -1567,7 +1603,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function observePageChanges(currentColorScheme, detectedTheme) {
+function observePageChanges(currentColorScheme, detectedTheme, classifier) {
 
   if (typeof chrome === "undefined" || !chrome.runtime || !chrome.storage) {
     console.error("Chrome extension APIs not available")
@@ -1586,11 +1622,11 @@ function observePageChanges(currentColorScheme, detectedTheme) {
 
           const blockedKeywords = result.blockedKeywords || []
 
-          if (blockedKeywords.length === 0) return
+          // if (blockedKeywords.length === 0) return
 
           // Wrap filterContent in a try-catch
           try {
-            ;(0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_1__.filterContent)(blockedKeywords, detectedTheme, currentColorScheme)
+            ;(0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_1__.filterContent)(blockedKeywords, detectedTheme, currentColorScheme, classifier)
           } catch (filterError) {
             console.error("Content filtering error:", filterError)
           }
@@ -1605,6 +1641,112 @@ function observePageChanges(currentColorScheme, detectedTheme) {
     childList: true,
     subtree: true,
   })
+}
+
+
+/***/ }),
+
+/***/ "./src/model/classifier-service.js":
+/*!*****************************************!*\
+  !*** ./src/model/classifier-service.js ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   YouTubeCategoryClassifier: () => (/* binding */ YouTubeCategoryClassifier)
+/* harmony export */ });
+// classifier-service.js
+class YouTubeCategoryClassifier {
+  constructor() {
+    this.modelData = null
+    this.isInitialized = false
+  }
+
+  async initialize() {
+    try {
+      const response = await fetch(
+        chrome.runtime.getURL("dist/model/browser_model.json")
+      )
+      this.modelData = await response.json()
+      this.isInitialized = true
+      console.log(
+        "Classifier initialized with categories:",
+        this.modelData.categories
+      )
+    } catch (error) {
+      console.error("Failed to initialize classifier:", error)
+      throw error
+    }
+  }
+
+  // Convert text to character n-grams
+  getNGrams(text, minN = 3, maxN = 5) {
+    const ngrams = new Map()
+    const lowercaseText = text.toLowerCase()
+
+    for (let n = minN; n <= maxN; n++) {
+      for (let i = 0; i <= lowercaseText.length - n; i++) {
+        const ngram = lowercaseText.slice(i, i + n)
+        ngrams.set(ngram, (ngrams.get(ngram) || 0) + 1)
+      }
+    }
+    return ngrams
+  }
+
+  // Create feature vector for text
+  getTextFeatures(text, vocabulary, idf) {
+    const features = new Float32Array(Object.keys(vocabulary).length).fill(0)
+    const ngrams = this.getNGrams(text)
+
+    for (const [ngram, count] of ngrams) {
+      const idx = vocabulary[ngram]
+      if (idx !== undefined) {
+        features[idx] = (1 + Math.log(count)) * idf[idx]
+      }
+    }
+
+    return features
+  }
+
+  // Normalize view count
+  normalizeViews(views) {
+    return (
+      (views - this.modelData.viewScaleParams.mean) /
+      this.modelData.viewScaleParams.std
+    )
+  }
+
+  predict(title, channel, views) {
+    if (!this.isInitialized) {
+      throw new Error("Classifier not initialized. Call initialize() first.")
+    }
+
+    // Get features
+    const titleFeatures = this.getTextFeatures(
+      title,
+      this.modelData.titleVocab,
+      this.modelData.titleIdf
+    )
+
+    const channelFeatures = this.getTextFeatures(
+      channel,
+      this.modelData.channelVocab,
+      this.modelData.channelIdf
+    )
+
+    const normalizedViews = this.normalizeViews(views)
+
+    // Combine all features
+    const features = new Float32Array([
+      ...titleFeatures,
+      ...channelFeatures,
+      normalizedViews,
+    ])
+
+    // Get predicted category
+    return this.modelData.categories[0] // Temporary return first category
+  }
 }
 
 
@@ -1738,6 +1880,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _colorTheme_colorChanger_colorChanger_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../colorTheme/colorChanger/colorChanger.js */ "./src/colorTheme/colorChanger/colorChanger.js");
 /* harmony import */ var _colorTheme_colorChanger_colorAnimation_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../colorTheme/colorChanger/colorAnimation.js */ "./src/colorTheme/colorChanger/colorAnimation.js");
 /* harmony import */ var _removeAds_removeAds_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../removeAds/removeAds.js */ "./src/removeAds/removeAds.js");
+/* harmony import */ var _model_classifier_service_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../model/classifier-service.js */ "./src/model/classifier-service.js");
+
 
 
 
@@ -1747,6 +1891,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let currentColorScheme = "gloriousblue" // module level
+let classifier = null
+
+// Initialize classifier
+async function initializeClassifier() {
+  classifier = new _model_classifier_service_js__WEBPACK_IMPORTED_MODULE_7__.YouTubeCategoryClassifier()
+  try {
+    await classifier.initialize()
+    console.log("YouTube classifier initialized successfully")
+  } catch (error) {
+    console.error("Failed to initialize classifier:", error)
+  }
+}
+
 
 function detectYouTubeTheme() {
   const isDarkTheme = document.documentElement.hasAttribute("dark")
@@ -1778,6 +1935,9 @@ if (performance.getEntriesByType("navigation")[0].type === "back_forward") {
 async function init() {
   if (!(0,_components_filtering_shouldApplyFiltering_js__WEBPACK_IMPORTED_MODULE_3__.shouldApplyFiltering)(window.location.pathname)) return
 
+  // Initialize classifier first
+  await initializeClassifier()
+
   let blockedKeywords = []
   let colorScheme = "gloriousblue"
   const detectedTheme = detectYouTubeTheme() // Detect the theme
@@ -1796,11 +1956,11 @@ async function init() {
       console.log("Chrome not defined at this point", err)
     }
   }
-  (0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_2__.filterContent)(blockedKeywords, detectedTheme, currentColorScheme)
+  (0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_2__.filterContent)(blockedKeywords, detectedTheme, currentColorScheme, classifier)
 
   // applyColorChanger(colorScheme)
   ;(0,_colorTheme_colorChanger_colorAnimation_js__WEBPACK_IMPORTED_MODULE_5__.colorAnimation)(currentColorScheme, detectedTheme)
-  ;(0,_observePageChanges_js__WEBPACK_IMPORTED_MODULE_1__.observePageChanges)(currentColorScheme, detectedTheme)
+  ;(0,_observePageChanges_js__WEBPACK_IMPORTED_MODULE_1__.observePageChanges)(currentColorScheme, detectedTheme, classifier)
 }
 
 if (document.readyState === "loading") {

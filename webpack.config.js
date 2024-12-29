@@ -24,7 +24,8 @@ module.exports = {
         new CopyWebPackPlugin({
             patterns: [
                 { from: 'src/icons', to: 'icons' },
-                {from: 'src/popup/popup.html', to: 'popup.html'},
+                { from: 'src/popup/popup.html', to: 'popup.html' },
+                { from: 'src/model/browser_model.json', to: 'model/browser_model.json'},
             ],
         }),
     ],
