@@ -371,7 +371,7 @@ function colorAnimation(scheme = "dark", theme) {
     const cinematicsElement = document.querySelector("#cinematics")
     if (cinematicsElement) {
       cinematicsElement.remove()
-      console.log("Removed #cinematics element")
+      // console.log("Removed #cinematics element")
     }
   }
 

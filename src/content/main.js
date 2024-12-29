@@ -53,7 +53,7 @@ async function init() {
         currentColorScheme = storageData.colorScheme
       }
     } catch (err) {
-      console.error("Chrome not defined at this point", err)
+      console.log("Chrome not defined at this point", err)
     }
   }
   filterContent(blockedKeywords, detectedTheme, currentColorScheme)

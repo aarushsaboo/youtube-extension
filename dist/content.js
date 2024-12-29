@@ -386,7 +386,7 @@ function colorAnimation(scheme = "dark", theme) {
     const cinematicsElement = document.querySelector("#cinematics")
     if (cinematicsElement) {
       cinematicsElement.remove()
-      console.log("Removed #cinematics element")
+      // console.log("Removed #cinematics element")
     }
   }
 
@@ -588,7 +588,9 @@ function filterContent(blockedKeywords, detectedTheme, colorScheme) {
       if (!title) return // Skip if no title is found
 
       if (isBlocked(title, blockedKeywords)) {
-        (0,_removing_hideAndRemoveElement__WEBPACK_IMPORTED_MODULE_0__.hideAndRemoveElement)(element, detectedTheme, colorScheme)
+        console.log(title)
+        console.log(blockedKeywords)
+        ;(0,_removing_hideAndRemoveElement__WEBPACK_IMPORTED_MODULE_0__.hideAndRemoveElement)(element, detectedTheme, colorScheme)
       }
     })
   })
@@ -642,13 +644,13 @@ function hideAndRemoveElement(element, detectedTheme, colorScheme) {
   element.setAttribute("data-processed", "true")
 
 
-  chrome.storage.sync.get(
-    ["blockedKeywords", "blockedCategory", "restrictAdult", "animationStyle"],
-    function (data) {
-      console.log("Loaded data from storage:", data)
-      console.log("Animation Style from storage:", data.animationStyle)
-    }
-  )
+  // chrome.storage.sync.get(
+  //   ["blockedKeywords", "blockedCategory", "restrictAdult", "animationStyle"],
+  //   function (data) {
+  //     console.log("Loaded data from storage:", data)
+  //     console.log("Animation Style from storage:", data.animationStyle)
+  //   }
+  // )
 
   chrome.storage.sync.get("animationStyle", function (data) {
     // <--- ADD THIS LINE
@@ -1781,7 +1783,7 @@ async function init() {
         currentColorScheme = storageData.colorScheme
       }
     } catch (err) {
-      console.error("Chrome not defined at this point", err)
+      console.log("Chrome not defined at this point", err)
     }
   }
   (0,_components_filtering_filterContent_js__WEBPACK_IMPORTED_MODULE_2__.filterContent)(blockedKeywords, detectedTheme, currentColorScheme)

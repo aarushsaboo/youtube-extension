@@ -6,13 +6,13 @@ function hideAndRemoveElement(element, detectedTheme, colorScheme) {
   element.setAttribute("data-processed", "true")
 
 
-  chrome.storage.sync.get(
-    ["blockedKeywords", "blockedCategory", "restrictAdult", "animationStyle"],
-    function (data) {
-      console.log("Loaded data from storage:", data)
-      console.log("Animation Style from storage:", data.animationStyle)
-    }
-  )
+  // chrome.storage.sync.get(
+  //   ["blockedKeywords", "blockedCategory", "restrictAdult", "animationStyle"],
+  //   function (data) {
+  //     console.log("Loaded data from storage:", data)
+  //     console.log("Animation Style from storage:", data.animationStyle)
+  //   }
+  // )
 
   chrome.storage.sync.get("animationStyle", function (data) {
     // <--- ADD THIS LINE

@@ -31,6 +31,8 @@ function filterContent(blockedKeywords, detectedTheme, colorScheme) {
       if (!title) return // Skip if no title is found
 
       if (isBlocked(title, blockedKeywords)) {
+        console.log(title)
+        console.log(blockedKeywords)
         hideAndRemoveElement(element, detectedTheme, colorScheme)
       }
     })
