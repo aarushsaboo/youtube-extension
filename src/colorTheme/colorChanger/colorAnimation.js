@@ -357,6 +357,13 @@ function colorAnimation(scheme = "dark", theme) {
         .header.ytd-playlist-panel-renderer{
           background-color: ${primaryColor} !important;
         }
+        /* little dot for subscribers */
+        #newness-dot.ytd-guide-entry-renderer{
+          background-color: ${secondaryColor} !important;
+        }
+        .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--text{
+          color: ${secondaryColor} !important;
+        }
   `
 
   // Remove any existing custom background style
