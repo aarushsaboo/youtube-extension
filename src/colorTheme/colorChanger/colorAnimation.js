@@ -357,8 +357,8 @@ function colorAnimation(scheme = "dark", theme) {
         .header.ytd-playlist-panel-renderer{
           background-color: ${primaryColor} !important;
         }
-        /* little dot for subscribers */
-        #newness-dot.ytd-guide-entry-renderer{
+        /* little dot for subscribers + trending's creator on the rise button */
+        #newness-dot.ytd-guide-entry-renderer, .badge-style-type-featured.ytd-badge-supported-renderer{
           background-color: ${secondaryColor} !important;
         }
         .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--text{

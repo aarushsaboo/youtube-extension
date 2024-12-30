@@ -372,6 +372,13 @@ function colorAnimation(scheme = "dark", theme) {
         .header.ytd-playlist-panel-renderer{
           background-color: ${primaryColor} !important;
         }
+        /* little dot for subscribers + trending's creator on the rise button */
+        #newness-dot.ytd-guide-entry-renderer, .badge-style-type-featured.ytd-badge-supported-renderer{
+          background-color: ${secondaryColor} !important;
+        }
+        .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--text{
+          color: ${secondaryColor} !important;
+        }
   `
 
   // Remove any existing custom background style
@@ -624,19 +631,27 @@ function filterContent(blockedKeywords, detectedTheme, colorScheme, classifier) 
 
     contentElements.forEach((element) => {
       const titleElement = element.querySelector(
-        "#video-title, #video-title-link, .ShortsLockupViewModelHostMetadataTitle a"
+        "#video-title, .ShortsLockupViewModelHostMetadataTitle a"
       )
+      /* all videos on home page( the actual text stuff + the link), shorts*/
 
       let title = ""
 
-      // Check textContent or aria-label for title
       if (titleElement) {
-        title = titleElement.textContent.trim()
-      } else if (element.hasAttribute("aria-label")) {
-        title = element.getAttribute("aria-label").trim()
+        title = titleElement.textContent.trim() // necessary for grabbing videos
+      }
+      else if (element.hasAttribute("aria-label")) {
+        title = element.getAttribute("aria-label").trim() // necessary for grabbing shorts
       }
 
       if (!title) return // Skip if no title is found
+
+      const channelNameElement = element.querySelector("#text > a")
+      // no provision for channel name given for shorts
+
+      const subscribers = element.querySelector(
+        "#metadata-line > span:nth-child(3), #content > ytm-shorts-lockup-view-model-v2 > ytm-shorts-lockup-view-model > div > div.shortsLockupViewModelHostMetadataSubhead.shortsLockupViewModelHostOutsideMetadataSubhead > span"
+      )
 
        // Check both keyword blocking and category blocking
       const shouldBlockByKeywords = isBlocked(title, blockedKeywords);
@@ -1587,10 +1602,10 @@ const CONFIG = {
   ],
   SELECTORS: {
     videosAndShorts: [
-      "ytd-rich-item-renderer h3",
-      "ytd-grid-video-renderer h3 a",
-      "ytm-shorts-lockup-view-model-v2 h3 a",
-      "ytd-grid-movie-renderer h3 span",
+      "ytd-rich-item-renderer h3", // video title
+      // "ytd-grid-video-renderer h3 a", // leave for now, check gaming 
+      "ytm-shorts-lockup-view-model-v2 h3 a", // shorts titles
+      // "ytd-grid-movie-renderer h3 span", // leave for now, check movies
     ],
   },
 }

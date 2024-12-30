@@ -57,19 +57,27 @@ function filterContent(blockedKeywords, detectedTheme, colorScheme, classifier) 
 
     contentElements.forEach((element) => {
       const titleElement = element.querySelector(
-        "#video-title, #video-title-link, .ShortsLockupViewModelHostMetadataTitle a"
+        "#video-title, .ShortsLockupViewModelHostMetadataTitle a"
       )
+      /* all videos on home page( the actual text stuff + the link), shorts*/
 
       let title = ""
 
-      // Check textContent or aria-label for title
       if (titleElement) {
-        title = titleElement.textContent.trim()
-      } else if (element.hasAttribute("aria-label")) {
-        title = element.getAttribute("aria-label").trim()
+        title = titleElement.textContent.trim() // necessary for grabbing videos
+      }
+      else if (element.hasAttribute("aria-label")) {
+        title = element.getAttribute("aria-label").trim() // necessary for grabbing shorts
       }
 
       if (!title) return // Skip if no title is found
+
+      const channelNameElement = element.querySelector("#text > a")
+      // no provision for channel name given for shorts
+
+      const subscribers = element.querySelector(
+        "#metadata-line > span:nth-child(3), #content > ytm-shorts-lockup-view-model-v2 > ytm-shorts-lockup-view-model > div > div.shortsLockupViewModelHostMetadataSubhead.shortsLockupViewModelHostOutsideMetadataSubhead > span"
+      )
 
        // Check both keyword blocking and category blocking
       const shouldBlockByKeywords = isBlocked(title, blockedKeywords);

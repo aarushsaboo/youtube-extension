@@ -10,10 +10,10 @@ export const CONFIG = {
   ],
   SELECTORS: {
     videosAndShorts: [
-      "ytd-rich-item-renderer h3",
-      "ytd-grid-video-renderer h3 a",
-      "ytm-shorts-lockup-view-model-v2 h3 a",
-      "ytd-grid-movie-renderer h3 span",
+      "ytd-rich-item-renderer h3", // video title
+      // "ytd-grid-video-renderer h3 a", // leave for now, check gaming 
+      "ytm-shorts-lockup-view-model-v2 h3 a", // shorts titles
+      // "ytd-grid-movie-renderer h3 span", // leave for now, check movies
     ],
   },
 }
