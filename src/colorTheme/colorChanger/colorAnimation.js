@@ -364,6 +364,22 @@ function colorAnimation(scheme = "dark", theme) {
         .yt-spec-button-shape-next--call-to-action.yt-spec-button-shape-next--text{
           color: ${secondaryColor} !important;
         }
+        /* black patch in Playlists heading + black patch in watch later + patch in liked videos + patch in all subscriptions */
+        #page-header-container.ytd-tabbed-page-header, #tabs-container.ytd-tabbed-page-header, ytd-feed-filter-chip-bar-renderer[component-style=FEED_FILTER_CHIP_BAR_STYLE_TYPE_HASHTAG_LANDING_PAGE] #chips-wrapper.ytd-feed-filter-chip-bar-renderer, ytd-feed-filter-chip-bar-renderer[component-style=FEED_FILTER_CHIP_BAR_STYLE_TYPE_HASHTAG_LANDING_PAGE] #chips-wrapper.ytd-feed-filter-chip-bar-renderer, #page-header-container.ytd-tabbed-page-header, #tabs-container.ytd-tabbed-page-header{
+          background-color: ${primaryColor} !important;
+        }
+          /* link in subscriptions */
+          #page-header > yt-page-header-renderer > yt-page-header-view-model > div > div.page-header-view-model-wiz__page-header-headline > div > yt-attribution-view-model > span.yt-core-attributed-string.yt-attribution-view-model-wiz__attribution-text.yt-core-attributed-string--white-space-no-wrap.yt-core-attributed-string--link-inherit-color > span{
+            color: ${secondaryColor} !important;
+          }
+          /* Home and community tabs in Music */
+          #tabsContainer {
+            background-color: var(--yt-spec-additive-background);
+          }
+            /* buy or rent link in movies + courses links*/
+            .badge-style-type-ypc.ytd-badge-supported-renderer, .badge-shape-wiz--commerce{
+              color: ${secondaryColor} !important;
+            }
   `
 
   // Remove any existing custom background style

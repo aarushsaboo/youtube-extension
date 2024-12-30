@@ -446,10 +446,16 @@ function applyGradientBlockStyle(
           transition: opacity 0.5s ease;
         }
 
+      /* videos */
       .gradient-block-base.video-content ytd-rich-grid-media {
         opacity: 0;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.5s ease;
       }
+        /* mixes */
+        .gradient-block-base #content.ytd-rich-item-renderer>.lockup.ytd-rich-item-renderer{
+          opacity: 0;
+          transition: opacity 0.5s ease;
+        }
     `
     document.head.appendChild(style)
   }

@@ -3,7 +3,7 @@ import { CONFIG } from "../../content/config"
 import { parseViewCount } from "../utils/parseViewCount"
 
 const BLOCKED_CATEGORIES = ["Entertainment", "Travel & Events", "Sports"]
-const PROBABILITY_THRESHOLD = 0.08 // Adjust this threshold based on confidence needed
+const PROBABILITY_THRESHOLD = 0.09 // Adjust this threshold based on confidence needed
 
 // Update isBlockedByCategory to include logging
 function isBlockedByCategory(contentData, classifier) {
