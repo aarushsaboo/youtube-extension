@@ -5,38 +5,28 @@ function hideAndRemoveElement(element, detectedTheme, colorScheme) {
   }
   element.setAttribute("data-processed", "true")
 
-
-  // chrome.storage.sync.get(
-  //   ["blockedKeywords", "blockedCategory", "restrictAdult", "animationStyle"],
-  //   function (data) {
-  //     console.log("Loaded data from storage:", data)
-  //     console.log("Animation Style from storage:", data.animationStyle)
-  //   }
-  // )
-
   chrome.storage.sync.get("animationStyle", function (data) {
-    // <--- ADD THIS LINE
-    // Check element type and get renderer
-    let renderer
-    let isShort = false
+    // Check if element is a video container (ytd-rich-item-renderer) or shorts container
+    const isShort = Boolean(
+      element.querySelector("ytm-shorts-lockup-view-model-v2")
+    )
 
-    if (element.closest("#content > ytm-shorts-lockup-view-model-v2")) {
-      const contentElement = element.closest("#content")
-      if (contentElement) {
-        renderer = contentElement.closest("ytd-rich-item-renderer")
-      }
-      isShort = true
-    } else if (element.closest("ytd-rich-grid-media")) {
-      renderer = element.closest("ytd-rich-grid-media").closest("#content")
-      // Hide #text element for videos
-      const textElement = renderer.querySelector("#channel-name")
-      if (textElement) {
-        textElement.style.display = "none"
-      }
-    }
+    // For videos, the element we get is already the ytd-rich-item-renderer
+    // For shorts, we need to get the closest ytd-rich-item-renderer
+    const renderer = isShort
+      ? element.closest("ytd-rich-item-renderer")
+      : element
 
     if (!renderer || renderer.hasAttribute("data-styled")) {
       return
+    }
+
+    // If it's a video, also hide the channel name
+    if (!isShort) {
+      const channelNameElement = renderer.querySelector("#channel-name")
+      if (channelNameElement) {
+        channelNameElement.style.display = "none"
+      }
     }
 
     const animationStyle = data.animationStyle || "displayNone"

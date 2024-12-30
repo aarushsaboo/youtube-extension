@@ -9,13 +9,20 @@ export const CONFIG = {
     "/feed/trending?bp=6gQJRkVleHBsb3Jl",
   ],
   SELECTORS: {
-    videosAndShorts: [
-      "ytd-rich-item-renderer h3", // video title
-      // "ytd-grid-video-renderer h3 a", // leave for now, check gaming 
-      "ytm-shorts-lockup-view-model-v2 h3 a", // shorts titles
-      // "ytd-grid-movie-renderer h3 span", // leave for now, check movies
-    ],
-  },
+    containers: {
+      videos: "ytd-rich-item-renderer",
+      shorts: "ytm-shorts-lockup-view-model-v2"
+    },
+    elements: {
+      videoTitle: "#video-title",
+      shortsTitle: "h3[aria-label]",
+      channelName: "#text > a",
+      subscribers: {
+        video: "#metadata-line > span:nth-child(3)",
+        shorts: "div.shortsLockupViewModelHostMetadataSubhead.shortsLockupViewModelHostOutsideMetadataSubhead > span"
+      }
+    }
+  }
 }
 
 // Structure for shorts

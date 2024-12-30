@@ -435,10 +435,16 @@ function applyGradientBlockStyle(
         text-align: center;
       }
 
-      .gradient-block-base.shorts-content #content > ytm-shorts-lockup-view-model-v2 {
+      /* shorts with the class .gradient-block-base & their selectors. the first is necessary, the second isn't */
+      .gradient-block-base #content > ytm-shorts-lockup-view-model-v2, .gradient-block-base .shortsLockupViewModelHostEndpoint {
         opacity: 0;
         transition: opacity 0.5s ease;
       }
+        /* shorts views */
+        .gradient-block-base .shortsLockupViewModelHostMetadataSubhead{
+          opacity: 0;
+          transition: opacity 0.5s ease;
+        }
 
       .gradient-block-base.video-content ytd-rich-grid-media {
         opacity: 0;
